@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-next-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.2
+// @version      0.3
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-next-chapter.meta.js
@@ -25,7 +25,7 @@ $(document).ready(function() {
     if (!history) {
         $(window).scroll(function() {
             if (
-                $(window).height() + $(window).scrollTop() >=
+                $(window).height() + $(window).scrollTop() + 200 >=
                 $("table:last").offset().top &&
                 !scrollCheck &&
                 $("button:last").is(":enabled")

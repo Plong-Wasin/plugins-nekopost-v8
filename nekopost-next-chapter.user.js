@@ -4,6 +4,8 @@
 // @version      0.1
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
+// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-next-chapter.meta.js
+// @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-next-chapter.user.js
 // @match        https://www.nekopost.net/*/*/*
 // @grant        window.close
 // ==/UserScript==
@@ -33,10 +35,22 @@ $(document).ready(function() {
             }
         });
     }
-    document.getElementsByClassName("btnComment")[0].style.backgroundColor =
-        "red";
-    $(".btnComment").html("x");
-    $(".btnComment").on("click", function() {
-        window.close();
-    });
+    document.getElementsByClassName(
+        "fad fa-comments-alt"
+    )[0].parentNode.style.backgroundColor = "red";
+    document
+        .getElementsByClassName("fad fa-comments-alt")[0]
+        .parentNode.addEventListener("click", function() {
+            window.close();
+        });
+    document.getElementsByClassName(
+        "fad fa-comments-alt"
+    )[0].parentNode.innerHTML = "X";
+
+    // document.getElementsByClassName("btnComment")[0].style.backgroundColor =
+    //     "red";
+    // $(".btnComment").html("x");
+    // $(".btnComment").on("click", function() {
+    //     window.close();
+    // });
 });

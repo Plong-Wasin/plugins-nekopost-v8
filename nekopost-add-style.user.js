@@ -4,8 +4,8 @@
 // @version      0.1
 // @description  nekopost-add-style
 // @author       Plong-Wasin
-// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopostLoadPage.meta.js
-// @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopostLoadPage.user.js
+// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-add-style.meta.js
+// @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-add-style.user.js
 // @match        https://www.nekopost.net/*
 // @exclude      https://www.nekopost.net/*/*/*
 // @grant        none

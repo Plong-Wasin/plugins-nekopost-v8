@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-next-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.1
+// @version      0.2
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-next-chapter.meta.js

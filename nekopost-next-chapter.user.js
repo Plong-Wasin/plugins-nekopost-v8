@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-next-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.4
+// @version      0.5
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-next-chapter.meta.js
@@ -29,7 +29,7 @@ $(document).ready(function() {
                 $("table:last").offset().top &&
                 !scrollCheck &&
                 $("button:last").is(":enabled") &&
-                !$("button:last").html("Close")
+                "Close" != $("button:last").html()
             ) {
                 scrollCheck = true;
                 $("button:last").click();
@@ -49,7 +49,7 @@ $(document).ready(function() {
     )[0].parentNode.innerHTML = "X";
     setTimeout(() => {
         if ($("button:last").is(":disabled")) {
-            $("button:last").html("close");
+            $("button:last").html("Close");
             document.getElementsByTagName("button")[
                 document.getElementsByTagName("button").length - 1
             ].disabled = false;

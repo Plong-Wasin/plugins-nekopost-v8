@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-next-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.3
+// @version      0.4
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-next-chapter.meta.js
@@ -28,7 +28,8 @@ $(document).ready(function() {
                 $(window).height() + $(window).scrollTop() + 200 >=
                 $("table:last").offset().top &&
                 !scrollCheck &&
-                $("button:last").is(":enabled")
+                $("button:last").is(":enabled") &&
+                !$("button:last").html("Close")
             ) {
                 scrollCheck = true;
                 $("button:last").click();
@@ -46,6 +47,20 @@ $(document).ready(function() {
     document.getElementsByClassName(
         "fad fa-comments-alt"
     )[0].parentNode.innerHTML = "X";
+    setTimeout(() => {
+        if ($("button:last").is(":disabled")) {
+            $("button:last").html("close");
+            document.getElementsByTagName("button")[
+                document.getElementsByTagName("button").length - 1
+            ].disabled = false;
+            document.getElementsByTagName("button")[
+                document.getElementsByTagName("button").length - 1
+            ].style = "background-color: red!important;";
+            $("button:last").on("click", function() {
+                window.close();
+            });
+        }
+    }, 2000);
 
     // document.getElementsByClassName("btnComment")[0].style.backgroundColor =
     //     "red";

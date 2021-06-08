@@ -1,0 +1,15 @@
+// ==UserScript==
+// @name         nekopost-new-chapter
+// @namespace    https://github.com/Plong-Wasin
+// @version      0.1
+// @description  nekopost-new-chapter
+// @author       Plong-Wasin
+// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.meta.js
+// @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
+// @match        https://www.nekopost.net/novel
+// @match        https://www.nekopost.net/project
+// @match        https://www.nekopost.net/comic
+// @match        https://www.nekopost.net/fiction
+// @match        https://www.nekopost.net/
+// ==/UserScript==
+function ready(e){"loading"!=document.readyState?e():document.addEventListener("DOMContentLoaded",e)}function sleep(e){return new Promise(t=>setTimeout(t,e))}function newChapter(){for(let e=0;e<document.querySelectorAll(".col-6.col-sm-4.col-md-3.col-lg-3.col-xl-2.p-2.svelte-gbfxcs").length;e++){if(-1!=document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML.search("<a"))continue;let t;t=-1!=document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerText.search(",")?document.querySelectorAll(".col-6.col-sm-4.col-md-3.col-lg-3.col-xl-2.p-2.svelte-gbfxcs")[e].children[0].href+"/"+document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML.substring(document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML.indexOf(".")+1,document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML.indexOf(",")):document.querySelectorAll(".col-6.col-sm-4.col-md-3.col-lg-3.col-xl-2.p-2.svelte-gbfxcs")[e].children[0].href+"/"+document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML.substring(document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML.indexOf(".")+1,document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML.indexOf(" ")),document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML=`<a href='${t}'>${document.querySelectorAll(".svelte-gbfxcs[style]")[e].innerHTML}</a>`}}function createStyles(){let e=document.createElement("style");e.innerHTML="span.svelte-gbfxcs>a:visited{color: rgb(152, 154, 157) !important;}",document.head.appendChild(e)}function checkLoadImage(){imgs=document.images,len=imgs.length,counter=0,[].forEach.call(imgs,function(e){e.complete?incrementCounter():(e.addEventListener("load",incrementCounter,!1),e.addEventListener("error",incrementCounter,!1))})}function incrementCounter(){counter++,counter===len&&newChapter()}ready(()=>{[].forEach.call(document.getElementsByClassName("more"),function(e){e.addEventListener("click",()=>{setTimeout(()=>{checkLoadImage()},500),setTimeout(()=>{checkLoadImage()},1e3),setTimeout(()=>{checkLoadImage()},5e3)})}),createStyles(),setTimeout(()=>{checkLoadImage()},1e3),window.addEventListener("scroll",()=>{document.getElementsByClassName("more")[0].getBoundingClientRect().top-window.innerHeight<0&&"https://www.nekopost.net/"!=window.location.href&&document.getElementsByClassName("more")[0].click()})});var imgs=document.images,len=imgs.length,counter=0;

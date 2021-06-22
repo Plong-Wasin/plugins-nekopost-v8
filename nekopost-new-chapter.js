@@ -1,7 +1,8 @@
 (() => {
     function getStrBtw(str, chr1, chr2) {
-        let mySubString = str.substring(str.indexOf(chr1) + 1, str.indexOf(chr2));
-        return mySubString;
+        if (chr1 == "") { return str.substring(0, str.indexOf(chr2)) }
+        return str.substring(str.indexOf(chr1) + 1, str.indexOf(chr2));
+
     }
 
     function ready(fn) {

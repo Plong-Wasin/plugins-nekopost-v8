@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.2
+// @version      0.3
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -86,7 +86,8 @@ function createElementPage() {
         );
 }
 
-function checkLoadState() {
+async function checkLoadState() {
+    await sleep(1000);
     if (document.images.length > 3) {
         return true;
     }
@@ -94,7 +95,7 @@ function checkLoadState() {
 }
 
 ready(async() => {
-    while (!checkLoadState);
+    while (!await checkLoadState());
     closeBtn();
     let splitUrl = window.location.pathname.split('/');
     let scrollCheck,
@@ -133,40 +134,39 @@ ready(async() => {
         );
     }
     addEventToImg();
-    window.addEventListener("scroll", async function eventScrollLoadPage() {
-        if (
-            window.innerHeight + window.screenY >=
-            document
-            .querySelectorAll("table")[
-                document.querySelectorAll("table").length - 1
-            ].getBoundingClientRect().top - 500 &&
-            !scrollCheck && currentChapterIndex > 0
-        ) {
-            scrollCheck = true;
-            currentChapterDetails = await getChapterDetails(
-                np_project_id,
-                projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id,
-                currentDate()
-            );
-            nc_chapter_id = projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id;
-            currentChapterIndex--;
-            for (item of currentChapterDetails.pageItem) {
-                insertPage(
+    if (currentChapterIndex > 0)
+        window.addEventListener("scroll", async function eventScrollLoadPage() {
+            let el = document.querySelectorAll('#page img');
+            if (
+                window.innerHeight + window.screenY >=
+                el[el.length - 1].getBoundingClientRect().top &&
+                !scrollCheck && currentChapterIndex > 0
+            ) {
+                scrollCheck = true;
+                currentChapterDetails = await getChapterDetails(
                     np_project_id,
-                    nc_chapter_id,
-                    item.fileName,
-                    item.pageNo,
-                    currentChapterDetails.pageItem.length
+                    projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id,
+                    currentDate()
                 );
+                nc_chapter_id = projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id;
+                currentChapterIndex--;
+                for (item of currentChapterDetails.pageItem) {
+                    insertPage(
+                        np_project_id,
+                        nc_chapter_id,
+                        item.fileName,
+                        item.pageNo,
+                        currentChapterDetails.pageItem.length
+                    );
+                }
+                addEventToImg();
+                changeChapter(projectDetails.projectChapterList[currentChapterIndex].nc_chapter_no);
+                scrollCheck = false;
+                if (currentChapterIndex == 0) {
+                    window.removeEventListener('scroll', eventScrollLoadPage)
+                }
             }
-            addEventToImg();
-            changeChapter(projectDetails.projectChapterList[currentChapterIndex].nc_chapter_no);
-            scrollCheck = false;
-            if (currentChapterIndex == 0) {
-                window.removeEventListener('scroll', eventScrollLoadPage)
-            }
-        }
-    });
+        });
 });
 
 function closeBtn() {

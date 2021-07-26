@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.3
+// @version      0.4
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -106,7 +106,7 @@ ready(async() => {
         currentChapterDetails,
         currentChapterIndex;
     np_project_id = splitUrl[splitUrl.length - 2];
-    nc_chapter_no = parseInt(splitUrl[splitUrl.length - 1]);
+    nc_chapter_no = parseFloat(splitUrl[splitUrl.length - 1]);
     clearPage();
     createElementPage();
     projectDetails = await getProjectDetailFull(np_project_id);

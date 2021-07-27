@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.4
+// @version      0.5
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -57,7 +57,7 @@ async function getChapterDetails(projectId, chapterId, date) {
 function clearPage() {
     document
         .querySelectorAll(
-            ".t-center.item-content.force-1p.float-left.svelte-1khndz6"
+            ".t-center.item-content.force-1p.float-left.svelte-1khndz6:not(#page>.t-center.item-content.force-1p.float-left.svelte-1khndz6)"
         )
         .forEach((item) => {
             item.outerHTML = "";
@@ -87,16 +87,14 @@ function createElementPage() {
 }
 
 async function checkLoadState() {
-    await sleep(1000);
     if (document.images.length > 3) {
         return true;
     }
+    await sleep(500);
     return false;
 }
 
 ready(async() => {
-    while (!await checkLoadState());
-    closeBtn();
     let splitUrl = window.location.pathname.split('/');
     let scrollCheck,
         nc_chapter_id,
@@ -107,8 +105,6 @@ ready(async() => {
         currentChapterIndex;
     np_project_id = splitUrl[splitUrl.length - 2];
     nc_chapter_no = parseFloat(splitUrl[splitUrl.length - 1]);
-    clearPage();
-    createElementPage();
     projectDetails = await getProjectDetailFull(np_project_id);
     for (let i = 0; i < projectDetails.projectChapterList.length; i++) {
         if (
@@ -124,6 +120,8 @@ ready(async() => {
         nc_chapter_id,
         currentDate()
     );
+    closeBtn();
+    createElementPage();
     for (item of currentChapterDetails.pageItem) {
         insertPage(
             np_project_id,
@@ -133,13 +131,15 @@ ready(async() => {
             currentChapterDetails.pageItem.length
         );
     }
+    // while (!await checkLoadState());
+    clearPage();
     addEventToImg();
     if (currentChapterIndex > 0)
         window.addEventListener("scroll", async function eventScrollLoadPage() {
             let el = document.querySelectorAll('#page img');
             if (
                 window.innerHeight + window.screenY >=
-                el[el.length - 1].getBoundingClientRect().top &&
+                el[el.length - 1].getBoundingClientRect().top - 1000 &&
                 !scrollCheck && currentChapterIndex > 0
             ) {
                 scrollCheck = true;

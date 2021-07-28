@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.61
+// @version      0.62
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -123,6 +123,8 @@ ready(async() => {
         nc_chapter_id,
         currentDate()
     );
+    while (!await checkLoadState());
+    clearPage();
     closeBtn();
     createElementPage();
     for (item of currentChapterDetails.pageItem) {
@@ -168,8 +170,6 @@ ready(async() => {
                 }
             }
         });
-    while (!await checkLoadState());
-    clearPage();
 });
 
 function closeBtn() {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.62
+// @version      0.63
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -127,6 +127,7 @@ ready(async() => {
     clearPage();
     closeBtn();
     createElementPage();
+    currentChapterDetails.pageItem.sort((a, b) => a.pageNo - b.pageNo);
     for (item of currentChapterDetails.pageItem) {
         insertPage(
             np_project_id,
@@ -153,6 +154,7 @@ ready(async() => {
                 );
                 nc_chapter_id = projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id;
                 currentChapterIndex--;
+                currentChapterDetails.pageItem.sort((a, b) => a.pageNo - b.pageNo);
                 for (item of currentChapterDetails.pageItem) {
                     insertPage(
                         np_project_id,
@@ -192,7 +194,13 @@ function addEventToImg() {
         if (i < el.length - 1) {
             el[i].addEventListener('load', e => {
                 el[i + 1].loading = 'auto';
-            })
+            });
+            el[i].addEventListener('err', e => {
+                setTimeout(() => {
+                    e.target.src = e.target.src;
+                }, 1000);
+            });
+
         }
     }
 }

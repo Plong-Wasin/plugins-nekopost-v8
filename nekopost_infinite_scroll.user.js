@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.64
+// @version      0.65
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -196,6 +196,7 @@ function addEventToImg() {
                 el[i + 1].loading = 'auto';
             });
             el[i].addEventListener('error', function () {
+                el[i + 1].loading = 'auto';
                 setTimeout(() => {
                     const imgSrc = this.src;
                     this.src = imgSrc;

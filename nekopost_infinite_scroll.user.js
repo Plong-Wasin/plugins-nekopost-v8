@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.63
+// @version      0.64
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -128,7 +128,7 @@ ready(async() => {
     closeBtn();
     createElementPage();
     currentChapterDetails.pageItem.sort((a, b) => a.pageNo - b.pageNo);
-    for (item of currentChapterDetails.pageItem) {
+    for (const item of currentChapterDetails.pageItem) {
         insertPage(
             np_project_id,
             nc_chapter_id,
@@ -155,7 +155,7 @@ ready(async() => {
                 nc_chapter_id = projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id;
                 currentChapterIndex--;
                 currentChapterDetails.pageItem.sort((a, b) => a.pageNo - b.pageNo);
-                for (item of currentChapterDetails.pageItem) {
+                for (const item of currentChapterDetails.pageItem) {
                     insertPage(
                         np_project_id,
                         nc_chapter_id,
@@ -192,12 +192,13 @@ function addEventToImg() {
     let el = document.querySelectorAll('#page img');
     for (let i = 0; i < el.length; i++) {
         if (i < el.length - 1) {
-            el[i].addEventListener('load', e => {
+            el[i].addEventListener('load', () => {
                 el[i + 1].loading = 'auto';
             });
-            el[i].addEventListener('err', e => {
+            el[i].addEventListener('error', function () {
                 setTimeout(() => {
-                    e.target.src = e.target.src;
+                    const imgSrc = this.src;
+                    this.src = imgSrc;
                 }, 1000);
             });
 

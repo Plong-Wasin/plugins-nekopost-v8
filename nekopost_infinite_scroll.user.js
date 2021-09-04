@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.65
+// @version      0.66
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
@@ -190,6 +190,10 @@ function closeBtn() {
 
 function addEventToImg() {
     let el = document.querySelectorAll('#page img');
+    let elLazy = document.querySelector('#page img[loading="lazy"]');
+    if(elLazy){
+        elLazy.loading='auto';
+    }
     for (let i = 0; i < el.length; i++) {
         if (i < el.length - 1) {
             el[i].addEventListener('load', () => {

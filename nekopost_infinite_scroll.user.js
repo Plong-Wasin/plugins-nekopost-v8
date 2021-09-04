@@ -25,18 +25,18 @@ function currentDate() {
     const d = new Date();
     return (
         d.getFullYear() +
-        (parseInt(d.getMonth()) + 1 >= 10 ?
-            parseInt(d.getMonth()) + 1 :
-            "0" + (parseInt(d.getMonth()) + 1)) +
-        (parseInt(d.getDate()) >= 10 ?
-            parseInt(d.getDate()) :
-            "0" + parseInt(d.getDate())) +
-        (parseInt(d.getHours()) >= 10 ?
-            parseInt(d.getHours()) :
-            "0" + parseInt(d.getHours())) +
-        (parseInt(d.getMinutes()) >= 10 ?
-            parseInt(d.getMinutes()) :
-            "0" + parseInt(d.getMinutes()))
+        (parseInt(d.getMonth()) + 1 >= 10
+            ? parseInt(d.getMonth()) + 1
+            : "0" + (parseInt(d.getMonth()) + 1)) +
+        (parseInt(d.getDate()) >= 10
+            ? parseInt(d.getDate())
+            : "0" + parseInt(d.getDate())) +
+        (parseInt(d.getHours()) >= 10
+            ? parseInt(d.getHours())
+            : "0" + parseInt(d.getHours())) +
+        (parseInt(d.getMinutes()) >= 10
+            ? parseInt(d.getMinutes())
+            : "0" + parseInt(d.getMinutes()))
     );
 }
 
@@ -87,18 +87,19 @@ function createElementPage() {
 }
 
 async function checkLoadState() {
-    if (document
-        .querySelectorAll(
+    if (
+        document.querySelectorAll(
             ".t-center.item-content.force-1p.float-left.svelte-1khndz6:not(#page>.t-center.item-content.force-1p.float-left.svelte-1khndz6)"
-        ).length > 0) {
+        ).length > 0
+    ) {
         return true;
     }
     await sleep(500);
     return false;
 }
 
-ready(async() => {
-    let splitUrl = window.location.pathname.split('/');
+ready(async () => {
+    let splitUrl = window.location.pathname.split("/");
     let scrollCheck,
         nc_chapter_id,
         np_project_id,
@@ -123,7 +124,7 @@ ready(async() => {
         nc_chapter_id,
         currentDate()
     );
-    while (!await checkLoadState());
+    while (!(await checkLoadState()));
     clearPage();
     closeBtn();
     createElementPage();
@@ -140,21 +141,27 @@ ready(async() => {
     addEventToImg();
     if (currentChapterIndex > 0)
         window.addEventListener("scroll", async function eventScrollLoadPage() {
-            let el = document.querySelectorAll('#page img');
+            let el = document.querySelectorAll("#page img");
             if (
                 window.innerHeight + window.screenY >=
-                el[el.length - 1].getBoundingClientRect().top - 1000 &&
-                !scrollCheck && currentChapterIndex > 0
+                    el[el.length - 1].getBoundingClientRect().top - 1000 &&
+                !scrollCheck &&
+                currentChapterIndex > 0
             ) {
                 scrollCheck = true;
                 currentChapterDetails = await getChapterDetails(
                     np_project_id,
-                    projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id,
+                    projectDetails.projectChapterList[currentChapterIndex - 1]
+                        .nc_chapter_id,
                     currentDate()
                 );
-                nc_chapter_id = projectDetails.projectChapterList[currentChapterIndex - 1].nc_chapter_id;
+                nc_chapter_id =
+                    projectDetails.projectChapterList[currentChapterIndex - 1]
+                        .nc_chapter_id;
                 currentChapterIndex--;
-                currentChapterDetails.pageItem.sort((a, b) => a.pageNo - b.pageNo);
+                currentChapterDetails.pageItem.sort(
+                    (a, b) => a.pageNo - b.pageNo
+                );
                 for (const item of currentChapterDetails.pageItem) {
                     insertPage(
                         np_project_id,
@@ -165,10 +172,13 @@ ready(async() => {
                     );
                 }
                 addEventToImg();
-                changeChapter(projectDetails.projectChapterList[currentChapterIndex].nc_chapter_no);
+                changeChapter(
+                    projectDetails.projectChapterList[currentChapterIndex]
+                        .nc_chapter_no
+                );
                 scrollCheck = false;
                 if (currentChapterIndex == 0) {
-                    window.removeEventListener('scroll', eventScrollLoadPage)
+                    window.removeEventListener("scroll", eventScrollLoadPage);
                 }
             }
         });
@@ -180,7 +190,7 @@ function closeBtn() {
     )[0].parentNode.style.backgroundColor = "red";
     document
         .getElementsByClassName("fad fa-comments-alt")[0]
-        .parentNode.addEventListener("click", function() {
+        .parentNode.addEventListener("click", function () {
             window.close();
         });
     document.getElementsByClassName(
@@ -189,32 +199,34 @@ function closeBtn() {
 }
 
 function addEventToImg() {
-    let el = document.querySelectorAll('#page img');
-    let elLazy = document.querySelector('#page img[loading="lazy"]');
-    if(elLazy){
-        elLazy.loading='auto';
+    let els = document.querySelectorAll('#page img[loading="lazy"]');
+    if (els.length > 0) {
+        els[0].loading = "auto";
     }
-    for (let i = 0; i < el.length; i++) {
-        if (i < el.length - 1) {
-            el[i].addEventListener('load', () => {
-                el[i + 1].loading = 'auto';
-            });
-            el[i].addEventListener('error', function () {
-                el[i + 1].loading = 'auto';
-                setTimeout(() => {
-                    const imgSrc = this.src;
-                    this.src = imgSrc;
-                }, 1000);
-            });
-
-        }
-    }
+    els.forEach((el, index) => {
+        el.addEventListener("load", () => {
+            for (let j = 1; j + index < els.length && j <= 3; j++) {
+                els[index + j].loading = "auto";
+            }
+        });
+        el.addEventListener('error',function (){
+            for (let j = 1; j + index < els.length && j <= 3; j++) {
+                els[index + j].loading = "auto";
+            }
+            setTimeout(() => {
+                const imgSrc = this.src;
+                this.src = imgSrc;
+            },1000);
+        });
+    });
 }
 
 function changeChapter(chapter) {
-    let splitUrl = window.location.href.split('/');
+    let splitUrl = window.location.href.split("/");
     splitUrl[splitUrl.length - 1] = chapter;
-    let newUrl = splitUrl.join('/');
-    window.history.pushState({}, '', newUrl);
-    document.querySelectorAll('select').forEach(el => { el.value = chapter });
+    let newUrl = splitUrl.join("/");
+    window.history.pushState({}, "", newUrl);
+    document.querySelectorAll("select").forEach((el) => {
+        el.value = chapter;
+    });
 }

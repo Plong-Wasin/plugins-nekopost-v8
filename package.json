@@ -1,0 +1,28 @@
+{
+    "name": "plugins-nekopost-v8",
+    "version": "1.0.0",
+    "description": "ทำเองใช้เองบนมือถือ <br>\r nekopost-add-style.user.js : เพิ่มstyle สำหรับตอนที่อ่านแล้ว + hover + กดซ่อนsidebar + infinite scroll <br>\r nekopost-next-chapter.user.js : เลื่อนลงมาถึงตอนกดปุ่มแล้ว กดปุ่มให้เอง แล้วแก้ปุ่มcomment เป็น ปิด",
+    "main": ".eslintrc.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Plong-Wasin/plugins-nekopost-v8.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Plong-Wasin/plugins-nekopost-v8/issues"
+    },
+    "homepage": "https://github.com/Plong-Wasin/plugins-nekopost-v8#readme",
+    "devDependencies": {
+        "eslint": "^8.4.1",
+        "typescript": "^4.5.4",
+        "@typescript-eslint/eslint-plugin": "^5.7.0",
+        "@typescript-eslint/parser": "^5.7.0",
+        "eslint-config-prettier": "^8.3.0"
+    },
+    "dependencies": {}
+}

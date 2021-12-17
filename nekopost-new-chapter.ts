@@ -1,17 +1,16 @@
-"use strict";
 (() => {
-    function ready(fn) {
+    function ready(fn: () => void): void {
         if (document.readyState != "loading") {
             fn();
-        }
-        else {
+        } else {
             document.addEventListener("DOMContentLoaded", fn);
         }
     }
+    
     // get chapter from string
     // example: Ch.5.5 - special chapter => 5.5
     // example: Ch.6.5,6,7 - special chapter => 6
-    function getChapter(str) {
+    function getChapter(str: string): number {
         let chapter = 0;
         const regex = /Ch\.?\s?(\d+\.?\d*)/g;
         const match = regex.exec(str);
@@ -20,6 +19,7 @@
         }
         return chapter;
     }
+
     function createStyle() {
         const style = document.createElement("style");
         style.innerHTML = `
@@ -29,27 +29,37 @@
         `;
         document.head.appendChild(style);
     }
-    function loadMore(loadMoreEls) {
+
+    function loadMore(loadMoreEls: NodeListOf<HTMLButtonElement>) {
         loadMoreEls.forEach((el) => {
-            if (el.getBoundingClientRect().top - 500 < window.innerHeight &&
-                el.getBoundingClientRect().height > 0) {
+            if (
+                el.getBoundingClientRect().top - 500 < window.innerHeight &&
+                el.getBoundingClientRect().height > 0
+            ) {
                 el.click();
             }
         });
     }
-    function getElementsByInnerText(text, selector = "*") {
-        const elements = document.querySelectorAll(selector);
-        const filteredElements = Array.from(elements).filter((el) => {
+
+    function getElementsByInnerText(
+        text: string,
+        selector = "*"
+    ): NodeListOf<Element> {
+        const elements = document.querySelectorAll<HTMLElement>(selector);
+        const filteredElements: unknown = Array.from(elements).filter((el) => {
             return el.innerText === text;
         });
-        return filteredElements;
+        return filteredElements as NodeListOf<Element>;
     }
+
     function addTagA() {
-        const chapterEls = document.querySelectorAll(".txt-elip.my-1:not(link-to-chapter)");
+        const chapterEls = document.querySelectorAll<HTMLSpanElement>(
+            ".txt-elip.my-1:not(link-to-chapter)"
+        );
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
             const chapter = getChapter(el.innerText);
-            const projectUrl = el.closest("a")?.href || "";
+            const projectUrl: string = el.closest("a")?.href || "";
             const tagA = document.createElement("a");
             tagA.href = `${projectUrl}/${chapter}`;
             tagA.innerText = originalText;
@@ -62,8 +72,11 @@
             el.classList.add("link-to-chapter");
         });
     }
+
     function addEventWindowScroll() {
-        const loadMoreEls = getElementsByInnerText("More");
+        const loadMoreEls = getElementsByInnerText(
+            "More"
+        ) as NodeListOf<HTMLButtonElement>;
         const fncWindowScroll = () => {
             loadMore(loadMoreEls);
             addTagA();
@@ -71,6 +84,7 @@
         window.removeEventListener("scroll", fncWindowScroll);
         window.addEventListener("scroll", fncWindowScroll);
     }
+
     function changeMenu() {
         const menus = document.querySelectorAll("#sidebar-menu a.waves-effect");
         menus.forEach((el) => {
@@ -81,6 +95,7 @@
             });
         });
     }
+
     ready(() => {
         createStyle();
         addEventWindowScroll();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.3
+// @version      0.4
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.meta.js
@@ -12,4 +12,92 @@
 // @match        https://www.nekopost.net/fiction
 // @match        https://www.nekopost.net/
 // ==/UserScript==
-(()=>{function e(e,t,n){return""==t?e.substring(0,e.indexOf(n)):e.substring(e.indexOf(t)+1,e.indexOf(n))}function t(e){"loading"!=document.readyState?e():document.addEventListener("DOMContentLoaded",e)}function n(){for(let t=0;t<document.querySelectorAll(".col-6.col-sm-4.col-md-3.col-lg-3.col-xl-2.p-2.svelte-gbfxcs").length;t++){if(-1!=document.querySelectorAll(".svelte-gbfxcs[style]")[t].innerHTML.search("<a"))continue;let n=document.querySelectorAll(".col-6.col-sm-4.col-md-3.col-lg-3.col-xl-2.p-2.svelte-gbfxcs")[t].children[0].href+"/",l=e(document.querySelectorAll(".svelte-gbfxcs[style]")[t].innerHTML,"."," ");-1!=l.search(",")?n+=e(l,"",","):n+=l,document.querySelectorAll(".svelte-gbfxcs[style]")[t].innerHTML=`<a href='${n}'>${document.querySelectorAll(".svelte-gbfxcs[style]")[t].innerHTML}</a>`}}function l(){let e=document.createElement("style");e.innerHTML="span.svelte-gbfxcs>a:visited{color: rgb(152, 154, 157) !important;}",document.head.appendChild(e)}function o(){s=document.images,r=s.length,i=0,[].forEach.call(s,function(e){e.complete?c():(e.addEventListener("load",c,!1),e.addEventListener("error",c,!1))})}function c(){i++,i===r&&n()}t(()=>{[].forEach.call(document.getElementsByClassName("more"),function(e){e.addEventListener("click",()=>{setTimeout(()=>{o()},500),setTimeout(()=>{o()},1e3),setTimeout(()=>{o()},5e3)})}),l(),setTimeout(()=>{o()},1e3),window.addEventListener("scroll",()=>{document.getElementsByClassName("more")[0].getBoundingClientRect().top-window.innerHeight<0&&"https://www.nekopost.net/"!=window.location.href&&document.getElementsByClassName("more")[0].click()})});let s=document.images,r=s.length,i=0})();
+"use strict";
+(() => {
+    function ready(fn) {
+        if (document.readyState != "loading") {
+            fn();
+        }
+        else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+    // get chapter from string
+    // example: Ch.5.5 - special chapter => 5.5
+    // example: Ch.6.5,6,7 - special chapter => 6
+    function getChapter(str) {
+        let chapter = 0;
+        const regex = /Ch\.?\s?(\d+\.?\d*)/g;
+        const match = regex.exec(str);
+        if (match) {
+            chapter = parseFloat(match[1]);
+        }
+        return chapter;
+    }
+    function createStyle() {
+        const style = document.createElement("style");
+        style.innerHTML = `
+            .link-to-chapter>a:visited {
+                color: var(--bs-green);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    function loadMore(loadMoreEls) {
+        loadMoreEls.forEach((el) => {
+            if (el.getBoundingClientRect().top - 500 < window.innerHeight &&
+                el.getBoundingClientRect().height > 0) {
+                el.click();
+            }
+        });
+    }
+    function getElementsByInnerText(text, selector = "*") {
+        const elements = document.querySelectorAll(selector);
+        const filteredElements = Array.from(elements).filter((el) => {
+            return el.innerText === text;
+        });
+        return filteredElements;
+    }
+    function addTagA() {
+        const chapterEls = document.querySelectorAll(".txt-elip.my-1:not(link-to-chapter)");
+        chapterEls.forEach((el) => {
+            const originalText = el.innerText;
+            const chapter = getChapter(el.innerText);
+            const projectUrl = el.closest("a")?.href || "";
+            const tagA = document.createElement("a");
+            tagA.href = `${projectUrl}/${chapter}`;
+            tagA.innerText = originalText;
+            tagA.onclick = () => {
+                window.location.href = tagA.href;
+                return false;
+            };
+            el.innerHTML = "";
+            el.appendChild(tagA);
+            el.classList.add("link-to-chapter");
+        });
+    }
+    function addEventWindowScroll() {
+        const loadMoreEls = getElementsByInnerText("More");
+        const fncWindowScroll = () => {
+            loadMore(loadMoreEls);
+            addTagA();
+        };
+        window.removeEventListener("scroll", fncWindowScroll);
+        window.addEventListener("scroll", fncWindowScroll);
+    }
+    function changeMenu() {
+        const menus = document.querySelectorAll("#sidebar-menu a.waves-effect");
+        menus.forEach((el) => {
+            el.addEventListener("click", () => {
+                setTimeout(() => {
+                    addEventWindowScroll();
+                }, 500);
+            });
+        });
+    }
+    ready(() => {
+        createStyle();
+        addEventWindowScroll();
+        changeMenu();
+    });
+})();

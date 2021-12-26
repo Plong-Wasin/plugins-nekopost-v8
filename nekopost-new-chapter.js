@@ -83,6 +83,7 @@
     }
     ready(() => {
         createStyle();
+        addTagA();
         addEventWindowScroll();
         changeMenu();
     });

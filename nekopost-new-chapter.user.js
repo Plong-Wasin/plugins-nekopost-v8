@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.4
+// @version      0.5
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.meta.js
@@ -97,6 +97,7 @@
     }
     ready(() => {
         createStyle();
+        addTagA();
         addEventWindowScroll();
         changeMenu();
     });

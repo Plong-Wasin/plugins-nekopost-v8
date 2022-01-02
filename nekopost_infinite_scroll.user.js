@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0
+// @version      1.1
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
-// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.meta.js
+// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
 // @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
 // @match        https://www.nekopost.net/manga/*/*
 // @grant        window.close
@@ -162,7 +162,7 @@
         })();
     });
     function closeBtn() {
-        const commentEl = document.querySelector(".layout-helper.svelte-3nj4mv a");
+        const commentEl = document.querySelector(".layout-helper.svelte-ixpqjn a");
         if (commentEl) {
             commentEl.removeAttribute("href");
             const btnEl = commentEl.querySelector("button");
@@ -240,6 +240,6 @@
                     });
                 }
             });
-        } 
+        }
     }
 })();

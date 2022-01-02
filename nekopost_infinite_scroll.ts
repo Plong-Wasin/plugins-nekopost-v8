@@ -295,7 +295,7 @@ interface PageItem {
 
     function closeBtn() {
         const commentEl: HTMLAnchorElement | null = document.querySelector(
-            ".layout-helper.svelte-3nj4mv a"
+            ".layout-helper.svelte-ixpqjn a"
         );
         if (commentEl) {
             commentEl.removeAttribute("href");

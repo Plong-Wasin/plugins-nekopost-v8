@@ -151,7 +151,7 @@
         })();
     });
     function closeBtn() {
-        const commentEl = document.querySelector(".layout-helper.svelte-3nj4mv a");
+        const commentEl = document.querySelector(".layout-helper.svelte-ixpqjn a");
         if (commentEl) {
             commentEl.removeAttribute("href");
             const btnEl = commentEl.querySelector("button");

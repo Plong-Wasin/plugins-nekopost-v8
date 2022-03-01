@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.2
+// @version      1.3
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
@@ -12,6 +12,9 @@
 "use strict";
 (() => {
     let prototypeEl;
+    const splitUrl = window.location.pathname.split("/");
+    const projectId = splitUrl[splitUrl.length - 2];
+    let chapterNo = parseFloat(splitUrl[splitUrl.length - 1]);
     const mangaPageSelector = ".t-center.item-content";
     function ready(fn) {
         if (document.readyState != "loading") {
@@ -134,6 +137,11 @@
                 // change next element to loading auto
                 lazyLoadImagesArray[index + 1].loading = "eager";
             }
+            // find incomplete
+            const incomplete = lazyLoadImagesArray.find((el) => el.complete === false);
+            if (incomplete) {
+                incomplete.loading = "eager";
+            }
         }
         function error(e) {
             setTimeout(() => {
@@ -149,7 +157,7 @@
         function addEvent(eventName, handler) {
             const rootEl = document.querySelector("#mangaImages");
             rootEl?.addEventListener(eventName, function (e) {
-                for (var target = e.target; target && target != this; target = target.parentNode) {
+                for (let target = e.target; target && target != this; target = target.parentNode) {
                     if (target.matches("img")) {
                         handler.call(target, e);
                         break;
@@ -170,12 +178,11 @@
                     window.innerHeight * 2 <=
                     0 &&
                     !isLoading) {
-                    const chapterNo = getCurrentChapterNo();
                     isLoading = true;
-                    const nextChapterNo = getNextChapterNo(chapterNo, projectDetails);
-                    if (nextChapterNo > 0) {
+                    chapterNo = getNextChapterNo(chapterNo, projectDetails);
+                    if (chapterNo > 0) {
                         void (async () => {
-                            await loadChapter(nextChapterNo, projectDetails);
+                            await loadChapter(chapterNo, projectDetails);
                             isLoading = false;
                         })();
                     }
@@ -211,15 +218,12 @@
             cloneEl.style.backgroundColor = "green";
             cloneEl.innerText = "All";
             cloneEl.style.marginRight = "5px";
-            let chapterNo = getCurrentChapterNo();
-            let nextChapterNo = getNextChapterNo(chapterNo, projectDetails);
             cloneEl.addEventListener("click", function loadAll() {
                 void (async () => {
-                    while (true) {
-                        nextChapterNo = getNextChapterNo(chapterNo, projectDetails);
-                        chapterNo = nextChapterNo;
-                        if (nextChapterNo > 0) {
-                            await loadChapter(nextChapterNo, projectDetails);
+                    while (chapterNo > 0) {
+                        chapterNo = getNextChapterNo(chapterNo, projectDetails);
+                        if (chapterNo > 0) {
+                            await loadChapter(chapterNo, projectDetails);
                         }
                         else {
                             break;
@@ -230,9 +234,10 @@
                         lazyLoadImage.loading = "eager";
                     }
                     cloneEl.removeEventListener("click", loadAll);
+                    cloneEl.remove();
                 })();
             });
-            if (nextChapterNo !== -1) {
+            if (chapterNo !== -1) {
                 const parentEl = document.querySelector(".layout-helper.svelte-ixpqjn");
                 if (parentEl) {
                     parentEl.insertBefore(cloneEl, parentEl.firstChild);
@@ -282,16 +287,9 @@
             });
         }
     }
-    function getCurrentChapterNo() {
-        const chapterNo = window.location.href.split("/").pop();
-        return chapterNo || "-1";
-    }
     ready(() => {
         void (async () => {
             addEventChangeSize();
-            const splitUrl = window.location.pathname.split("/");
-            const projectId = splitUrl[splitUrl.length - 2];
-            const chapterNo = parseFloat(splitUrl[splitUrl.length - 1]);
             const projectDetails = await getProjectDetailFull(projectId);
             while (!(await checkLoadState()))
                 ;
@@ -304,8 +302,7 @@
             onloadImages();
             await loadChapter(chapterNo.toString(), projectDetails);
             clearPage();
-            let nextChapterNo = getNextChapterNo(chapterNo, projectDetails);
-            if (nextChapterNo > -1) {
+            if (getNextChapterNo(chapterNo, projectDetails) > -1) {
                 addScrollEvent(projectDetails);
             }
         })();

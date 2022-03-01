@@ -73,6 +73,11 @@ interface PageItem {
 
 (() => {
     let prototypeEl: HTMLElement | undefined | Node;
+    const splitUrl = window.location.pathname.split("/");
+    const projectId: string | number = splitUrl[splitUrl.length - 2];
+    let chapterNo: string | number = parseFloat(
+        splitUrl[splitUrl.length - 1]
+    );
     const mangaPageSelector = ".t-center.item-content";
     function ready(fn: () => void): void {
         if (document.readyState != "loading") {
@@ -247,6 +252,13 @@ interface PageItem {
                 // change next element to loading auto
                 lazyLoadImagesArray[index + 1].loading = "eager";
             }
+            // find incomplete
+            const incomplete = lazyLoadImagesArray.find(
+                (el) => el.complete === false
+            );
+            if (incomplete) {
+                incomplete.loading = "eager";
+            }
         }
         function error(this: HTMLImageElement, e: Event) {
             setTimeout(() => {
@@ -265,7 +277,7 @@ interface PageItem {
                 eventName,
                 function (this: HTMLElement, e) {
                     for (
-                        var target = e.target as HTMLImageElement;
+                        let target = e.target as HTMLImageElement;
                         target && target != this;
                         target = target.parentNode as HTMLImageElement
                     ) {
@@ -293,15 +305,14 @@ interface PageItem {
                         0 &&
                     !isLoading
                 ) {
-                    const chapterNo = getCurrentChapterNo();
                     isLoading = true;
-                    const nextChapterNo = getNextChapterNo(
+                    chapterNo = getNextChapterNo(
                         chapterNo,
                         projectDetails
                     );
-                    if (nextChapterNo > 0) {
+                    if (chapterNo > 0) {
                         void (async () => {
-                            await loadChapter(nextChapterNo, projectDetails);
+                            await loadChapter(chapterNo, projectDetails);
                             isLoading = false;
                         })();
                     } else {
@@ -349,18 +360,15 @@ interface PageItem {
             cloneEl.style.backgroundColor = "green";
             cloneEl.innerText = "All";
             cloneEl.style.marginRight = "5px";
-            let chapterNo: string | number = getCurrentChapterNo();
-            let nextChapterNo = getNextChapterNo(chapterNo, projectDetails);
             cloneEl.addEventListener("click", function loadAll() {
                 void (async () => {
-                    while (true) {
-                        nextChapterNo = getNextChapterNo(
+                    while (chapterNo > 0) {
+                        chapterNo = getNextChapterNo(
                             chapterNo,
                             projectDetails
                         );
-                        chapterNo = nextChapterNo;
-                        if (nextChapterNo > 0) {
-                            await loadChapter(nextChapterNo, projectDetails);
+                        if (chapterNo > 0) {
+                            await loadChapter(chapterNo, projectDetails);
                         } else {
                             break;
                         }
@@ -370,9 +378,10 @@ interface PageItem {
                         lazyLoadImage.loading = "eager";
                     }
                     cloneEl.removeEventListener("click", loadAll);
+                    cloneEl.remove();
                 })();
             });
-            if (nextChapterNo!==-1) {
+            if (chapterNo!==-1) {
                 const parentEl = document.querySelector(
                     ".layout-helper.svelte-ixpqjn"
                 );
@@ -426,18 +435,10 @@ interface PageItem {
             });
         }
     }
-    function getCurrentChapterNo() {
-        const chapterNo = window.location.href.split("/").pop();
-        return chapterNo || "-1";
-    }
     ready(() => {
         void (async () => {
             addEventChangeSize();
-            const splitUrl = window.location.pathname.split("/");
-            const projectId: string | number = splitUrl[splitUrl.length - 2];
-            const chapterNo: string | number = parseFloat(
-                splitUrl[splitUrl.length - 1]
-            );
+           
             const projectDetails = await getProjectDetailFull(projectId);
             while (!(await checkLoadState()));
             prototypeEl = document
@@ -449,8 +450,7 @@ interface PageItem {
             onloadImages();
             await loadChapter(chapterNo.toString(), projectDetails);
             clearPage();
-            let nextChapterNo = getNextChapterNo(chapterNo, projectDetails);
-            if (nextChapterNo > -1) {
+            if (getNextChapterNo(chapterNo, projectDetails) > -1) {
                 addScrollEvent(projectDetails);
             }
         })();

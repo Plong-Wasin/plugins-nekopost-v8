@@ -316,6 +316,7 @@ interface PageItem {
                             isLoading = false;
                         })();
                     } else {
+                        document.querySelector("#loadAllChapterBtn")?.remove();
                         window.removeEventListener(
                             "scroll",
                             eventScrollLoadPage
@@ -360,6 +361,7 @@ interface PageItem {
             cloneEl.style.backgroundColor = "green";
             cloneEl.innerText = "All";
             cloneEl.style.marginRight = "5px";
+            cloneEl.id = "loadAllChapterBtn";
             cloneEl.addEventListener("click", function loadAll() {
                 void (async () => {
                     while (chapterNo > 0) {
@@ -381,7 +383,7 @@ interface PageItem {
                     cloneEl.remove();
                 })();
             });
-            if (chapterNo!==-1) {
+            if (getNextChapterNo(chapterNo, projectDetails)) {
                 const parentEl = document.querySelector(
                     ".layout-helper.svelte-ixpqjn"
                 );

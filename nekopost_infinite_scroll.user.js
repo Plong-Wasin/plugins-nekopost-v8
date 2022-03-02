@@ -8,6 +8,7 @@
 // @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
 // @match        https://www.nekopost.net/manga/*/*
 // @grant        window.close
+// ==/UserScript==
 "use strict";
 (() => {
     let prototypeEl;

@@ -75,9 +75,7 @@ interface PageItem {
     let prototypeEl: HTMLElement | undefined | Node;
     const splitUrl = window.location.pathname.split("/");
     const projectId: string | number = splitUrl[splitUrl.length - 2];
-    let chapterNo: string | number = parseFloat(
-        splitUrl[splitUrl.length - 1]
-    );
+    let chapterNo: string | number = parseFloat(splitUrl[splitUrl.length - 1]);
     const mangaPageSelector = ".t-center.item-content";
     function ready(fn: () => void): void {
         if (document.readyState != "loading") {
@@ -306,16 +304,14 @@ interface PageItem {
                     !isLoading
                 ) {
                     isLoading = true;
-                    chapterNo = getNextChapterNo(
-                        chapterNo,
-                        projectDetails
-                    );
+                    chapterNo = getNextChapterNo(chapterNo, projectDetails);
                     if (chapterNo > 0) {
                         void (async () => {
                             await loadChapter(chapterNo, projectDetails);
                             isLoading = false;
                         })();
-                    } else {
+                    }
+                    if (getNextChapterNo(chapterNo, projectDetails) === -1) {
                         document.querySelector("#loadAllChapterBtn")?.remove();
                         window.removeEventListener(
                             "scroll",
@@ -365,17 +361,17 @@ interface PageItem {
             cloneEl.addEventListener("click", function loadAll() {
                 void (async () => {
                     while (chapterNo > 0) {
-                        chapterNo = getNextChapterNo(
-                            chapterNo,
-                            projectDetails
-                        );
+                        chapterNo = getNextChapterNo(chapterNo, projectDetails);
                         if (chapterNo > 0) {
                             await loadChapter(chapterNo, projectDetails);
                         } else {
                             break;
                         }
                     }
-                    const lazyLoadImage = document.querySelector<HTMLImageElement>("img[loading='lazy']");
+                    const lazyLoadImage =
+                        document.querySelector<HTMLImageElement>(
+                            "img[loading='lazy']"
+                        );
                     if (lazyLoadImage) {
                         lazyLoadImage.loading = "eager";
                     }
@@ -383,7 +379,7 @@ interface PageItem {
                     cloneEl.remove();
                 })();
             });
-            if (getNextChapterNo(chapterNo, projectDetails)) {
+            if (getNextChapterNo(chapterNo, projectDetails) > -1) {
                 const parentEl = document.querySelector(
                     ".layout-helper.svelte-ixpqjn"
                 );
@@ -440,7 +436,7 @@ interface PageItem {
     ready(() => {
         void (async () => {
             addEventChangeSize();
-           
+
             const projectDetails = await getProjectDetailFull(projectId);
             while (!(await checkLoadState()));
             prototypeEl = document

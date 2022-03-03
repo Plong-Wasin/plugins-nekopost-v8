@@ -175,7 +175,7 @@
                             isLoading = false;
                         })();
                     }
-                    else {
+                    if (getNextChapterNo(chapterNo, projectDetails) === -1) {
                         document.querySelector("#loadAllChapterBtn")?.remove();
                         window.removeEventListener("scroll", eventScrollLoadPage);
                     }
@@ -228,7 +228,7 @@
                     cloneEl.remove();
                 })();
             });
-            if (getNextChapterNo(chapterNo, projectDetails)) {
+            if (getNextChapterNo(chapterNo, projectDetails) > -1) {
                 const parentEl = document.querySelector(".layout-helper.svelte-ixpqjn");
                 if (parentEl) {
                     parentEl.insertBefore(cloneEl, parentEl.firstChild);

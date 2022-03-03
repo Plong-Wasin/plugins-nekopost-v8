@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.3.1
+// @version      1.3.2
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
@@ -186,7 +186,7 @@
                             isLoading = false;
                         })();
                     }
-                    else {
+                    if (getNextChapterNo(chapterNo, projectDetails) === -1) {
                         document.querySelector("#loadAllChapterBtn")?.remove();
                         window.removeEventListener("scroll", eventScrollLoadPage);
                     }
@@ -239,7 +239,7 @@
                     cloneEl.remove();
                 })();
             });
-            if (getNextChapterNo(chapterNo, projectDetails)) {
+            if (getNextChapterNo(chapterNo, projectDetails) > -1) {
                 const parentEl = document.querySelector(".layout-helper.svelte-ixpqjn");
                 if (parentEl) {
                     parentEl.insertBefore(cloneEl, parentEl.firstChild);

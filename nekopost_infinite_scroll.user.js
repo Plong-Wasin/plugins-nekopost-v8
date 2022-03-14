@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.3.2
+// @version      1.3.3
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
@@ -251,7 +251,17 @@
         const chapterStr = chapter.toString();
         splitUrl[splitUrl.length - 1] = chapterStr;
         const newUrl = splitUrl.join("/");
-        window.history.pushState({}, "", newUrl);
+        if (window.location.href !== newUrl) {
+            // change title to chapter
+            const titleEl = document.querySelector("title");
+            if (titleEl) {
+                // get text between "." and " "
+                const oldChapter = titleEl.innerText.split(".")[1].split(" ")[0];
+                // replace oldChapter to chapter
+                titleEl.innerText = titleEl.innerText.replace(oldChapter, chapterStr);
+            }
+            window.history.replaceState({}, "", newUrl);
+        }
         document.querySelectorAll("select").forEach((el) => {
             el.value = chapterStr;
         });

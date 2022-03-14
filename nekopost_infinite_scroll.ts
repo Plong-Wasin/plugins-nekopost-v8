@@ -395,7 +395,17 @@ interface PageItem {
         const chapterStr = chapter.toString();
         splitUrl[splitUrl.length - 1] = chapterStr;
         const newUrl = splitUrl.join("/");
-        window.history.pushState({}, "", newUrl);
+        if(window.location.href !== newUrl) {
+            // change title to chapter
+            const titleEl = document.querySelector("title");
+            if (titleEl) {
+                // get text between "." and " "
+                const oldChapter = titleEl.innerText.split(".")[1].split(" ")[0];
+                // replace oldChapter to chapter
+                titleEl.innerText = titleEl.innerText.replace(oldChapter, chapterStr);
+            }
+            window.history.replaceState({}, "", newUrl);
+        }
         document.querySelectorAll("select").forEach((el) => {
             el.value = chapterStr;
         });

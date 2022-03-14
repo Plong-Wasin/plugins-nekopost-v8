@@ -8,6 +8,7 @@
 // @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
 // @match        https://www.nekopost.net/manga/*/*
 // @grant        window.close
+// ==/UserScript==
 "use strict";
 (() => {
     let prototypeEl;
@@ -122,8 +123,10 @@
         return currentIndex > 0 ? chapterList[currentIndex - 1].chapterNo : -1;
     }
     function onloadImages() {
+        const errorElements = [];
         function load(e) {
             const lazyLoadImages = document.querySelectorAll("#mangaImages img") || [];
+            const multipleLoad = 3;
             // nodeList to array
             const lazyLoadImagesArray = Array.from(lazyLoadImages);
             // get index from this element
@@ -137,15 +140,21 @@
                 lazyLoadImagesArray[index + 1].loading = "eager";
             }
             // find incomplete
-            const incomplete = lazyLoadImagesArray.find((el) => el.complete === false);
-            if (incomplete) {
-                incomplete.loading = "eager";
+            const incompleteElements = lazyLoadImagesArray.filter((el) => el.complete === false);
+            if (incompleteElements) {
+                incompleteElements.slice(0, multipleLoad + errorElements.length).forEach((el) => {
+                    el.loading = "eager";
+                });
             }
         }
         function error(e) {
             setTimeout(() => {
                 const errorCount = +(this.dataset.errorCount || 0);
                 if (errorCount < 3) {
+                    // push to error elements if not exist
+                    if (!errorElements.includes(this)) {
+                        errorElements.push(this);
+                    }
                     const src = this.src;
                     this.src = src;
                     this.dataset.errorCount = (errorCount + 1).toString();

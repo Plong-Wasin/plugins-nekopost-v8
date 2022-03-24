@@ -1,5 +1,6 @@
 "use strict";
 (() => {
+    let host = "";
     let prototypeEl;
     const splitUrl = window.location.pathname.split("/");
     const projectId = splitUrl[splitUrl.length - 2];
@@ -61,7 +62,7 @@
             const imgEl = cloneEl.querySelector("img");
             const pageEl = cloneEl.querySelector("p");
             if (imgEl) {
-                imgEl.src = `https://fs.nekopost.net/collectManga/${projectId}/${chapterId}/${pageName}`;
+                imgEl.src = `${host}/collectManga/${projectId}/${chapterId}/${pageName}`;
                 imgEl.loading = "lazy";
                 removeDisplayActiveClass(imgEl);
                 imgEl.classList.add(`display${displayActive}`);
@@ -254,7 +255,7 @@
             const titleEl = document.querySelector("title");
             if (titleEl) {
                 // get text between "." and " "
-                const oldChapter = titleEl.innerText.split(".")[1].split(" ")[0];
+                const oldChapter = getTextBtw(titleEl.innerText, ".", " ");
                 // replace oldChapter to chapter
                 titleEl.innerText = titleEl.innerText.replace(oldChapter, chapterStr);
             }
@@ -296,6 +297,11 @@
             });
         }
     }
+    function getTextBtw(str, str1, str2) {
+        const index1 = str.indexOf(str1);
+        const index2 = str.indexOf(str2);
+        return str.substring(index1 + str1.length, index2);
+    }
     ready(() => {
         void (async () => {
             addEventChangeSize();
@@ -309,6 +315,7 @@
             closeBtn();
             loadAllChapterBtn(projectDetails);
             onloadImages();
+            host = new URL(document.querySelector(`${mangaPageSelector} img:not(#mangaImages ${mangaPageSelector})`)?.src || 'https://fs.nekopost.net/').origin;
             await loadChapter(chapterNo.toString(), projectDetails);
             clearPage();
             if (getNextChapterNo(chapterNo, projectDetails) > -1) {

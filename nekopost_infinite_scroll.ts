@@ -72,6 +72,7 @@ interface PageItem {
 }
 
 (() => {
+    let host = "";
     let prototypeEl: HTMLElement | undefined | Node;
     const splitUrl = window.location.pathname.split("/");
     const projectId: string | number = splitUrl[splitUrl.length - 2];
@@ -159,7 +160,7 @@ interface PageItem {
             const imgEl = cloneEl.querySelector("img");
             const pageEl = cloneEl.querySelector("p");
             if (imgEl) {
-                imgEl.src = `https://fs.nekopost.net/collectManga/${projectId}/${chapterId}/${pageName}`;
+                imgEl.src = `${host}/collectManga/${projectId}/${chapterId}/${pageName}`;
                 imgEl.loading = "lazy";
                 removeDisplayActiveClass(imgEl);
                 imgEl.classList.add(`display${displayActive}`);
@@ -408,7 +409,7 @@ interface PageItem {
             const titleEl = document.querySelector("title");
             if (titleEl) {
                 // get text between "." and " "
-                const oldChapter = titleEl.innerText.split(".")[1].split(" ")[0];
+                const oldChapter = getTextBtw(titleEl.innerText, ".", " ");
                 // replace oldChapter to chapter
                 titleEl.innerText = titleEl.innerText.replace(oldChapter, chapterStr);
             }
@@ -451,6 +452,11 @@ interface PageItem {
             });
         }
     }
+    function getTextBtw(str:string,str1:string,str2:string){
+        const index1 = str.indexOf(str1);
+        const index2 = str.indexOf(str2);
+        return str.substring(index1 + str1.length, index2);
+    }
     ready(() => {
         void (async () => {
             addEventChangeSize();
@@ -464,6 +470,9 @@ interface PageItem {
             closeBtn();
             loadAllChapterBtn(projectDetails);
             onloadImages();
+            host = new URL(document.querySelector<HTMLImageElement>(
+                `${mangaPageSelector} img:not(#mangaImages ${mangaPageSelector})`
+            )?.src||'https://fs.nekopost.net/').origin;
             await loadChapter(chapterNo.toString(), projectDetails);
             clearPage();
             if (getNextChapterNo(chapterNo, projectDetails) > -1) {

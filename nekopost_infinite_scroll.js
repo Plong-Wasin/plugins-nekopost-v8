@@ -35,7 +35,7 @@
         return response.json();
     }
     async function getChapterDetails(projectId, chapterId, date) {
-        const response = await fetch(`https://fs.nekopost.net/collectManga/${projectId}/${chapterId}/${projectId}_${chapterId}.json?${date}`);
+        const response = await fetch(`${host}/collectManga/${projectId}/${chapterId}/${projectId}_${chapterId}.json?${date}`);
         return response.json();
     }
     function clearPage() {
@@ -132,7 +132,9 @@
             // find incomplete
             const incompleteElements = lazyLoadImagesArray.filter((el) => el.complete === false);
             if (incompleteElements) {
-                incompleteElements.slice(0, multipleLoad + errorElements.length).forEach((el) => {
+                incompleteElements
+                    .slice(0, multipleLoad + errorElements.length)
+                    .forEach((el) => {
                     el.loading = "eager";
                 });
             }
@@ -315,7 +317,7 @@
             closeBtn();
             loadAllChapterBtn(projectDetails);
             onloadImages();
-            host = new URL(document.querySelector(`${mangaPageSelector} img:not(#mangaImages ${mangaPageSelector})`)?.src || 'https://fs.nekopost.net/').origin;
+            host = new URL(document.querySelector(`${mangaPageSelector} img:not(#mangaImages ${mangaPageSelector})`)?.src || "https://fs.nekopost.net/").origin;
             await loadChapter(chapterNo.toString(), projectDetails);
             clearPage();
             if (getNextChapterNo(chapterNo, projectDetails) > -1) {

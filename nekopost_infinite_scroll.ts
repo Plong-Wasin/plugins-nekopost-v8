@@ -119,7 +119,7 @@ interface PageItem {
         date: string
     ): Promise<RootChapterInfo> {
         const response = await fetch(
-            `https://fs.nekopost.net/collectManga/${projectId}/${chapterId}/${projectId}_${chapterId}.json?${date}`
+            `${host}/collectManga/${projectId}/${chapterId}/${projectId}_${chapterId}.json?${date}`
         );
         return response.json() as Promise<RootChapterInfo>;
     }
@@ -234,7 +234,7 @@ interface PageItem {
         return currentIndex > 0 ? chapterList[currentIndex - 1].chapterNo : -1;
     }
     function onloadImages() {
-        const errorElements: HTMLImageElement[] = [] ;
+        const errorElements: HTMLImageElement[] = [];
         function load(this: HTMLImageElement, e: Event) {
             const lazyLoadImages =
                 document.querySelectorAll<HTMLImageElement>(
@@ -258,9 +258,11 @@ interface PageItem {
                 (el) => el.complete === false
             );
             if (incompleteElements) {
-                incompleteElements.slice(0, multipleLoad+errorElements.length).forEach((el) => {
-                    el.loading = "eager";
-                });
+                incompleteElements
+                    .slice(0, multipleLoad + errorElements.length)
+                    .forEach((el) => {
+                        el.loading = "eager";
+                    });
             }
         }
         function error(this: HTMLImageElement, e: Event) {
@@ -404,14 +406,17 @@ interface PageItem {
         const chapterStr = chapter.toString();
         splitUrl[splitUrl.length - 1] = chapterStr;
         const newUrl = splitUrl.join("/");
-        if(window.location.href !== newUrl) {
+        if (window.location.href !== newUrl) {
             // change title to chapter
             const titleEl = document.querySelector("title");
             if (titleEl) {
                 // get text between "." and " "
                 const oldChapter = getTextBtw(titleEl.innerText, ".", " ");
                 // replace oldChapter to chapter
-                titleEl.innerText = titleEl.innerText.replace(oldChapter, chapterStr);
+                titleEl.innerText = titleEl.innerText.replace(
+                    oldChapter,
+                    chapterStr
+                );
             }
             window.history.replaceState({}, "", newUrl);
         }
@@ -452,7 +457,7 @@ interface PageItem {
             });
         }
     }
-    function getTextBtw(str:string,str1:string,str2:string){
+    function getTextBtw(str: string, str1: string, str2: string) {
         const index1 = str.indexOf(str1);
         const index2 = str.indexOf(str2);
         return str.substring(index1 + str1.length, index2);
@@ -470,9 +475,11 @@ interface PageItem {
             closeBtn();
             loadAllChapterBtn(projectDetails);
             onloadImages();
-            host = new URL(document.querySelector<HTMLImageElement>(
-                `${mangaPageSelector} img:not(#mangaImages ${mangaPageSelector})`
-            )?.src||'https://fs.nekopost.net/').origin;
+            host = new URL(
+                document.querySelector<HTMLImageElement>(
+                    `${mangaPageSelector} img:not(#mangaImages ${mangaPageSelector})`
+                )?.src || "https://fs.nekopost.net/"
+            ).origin;
             await loadChapter(chapterNo.toString(), projectDetails);
             clearPage();
             if (getNextChapterNo(chapterNo, projectDetails) > -1) {

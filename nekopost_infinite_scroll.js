@@ -66,6 +66,7 @@
                 imgEl.loading = "lazy";
                 removeDisplayActiveClass(imgEl);
                 imgEl.classList.add(`display${displayActive}`);
+                imgEl.style.minHeight = `250px`;
             }
             if (pageEl) {
                 pageEl.innerText = `Page No.${pageNo}/${totalPages}`;

@@ -6,7 +6,7 @@
             document.addEventListener("DOMContentLoaded", fn);
         }
     }
-    
+
     // get chapter from string
     // example: Ch.5.5 - special chapter => 5.5
     // example: Ch.6.5,6,7 - special chapter => 6
@@ -54,7 +54,7 @@
 
     function addTagA() {
         const chapterEls = document.querySelectorAll<HTMLSpanElement>(
-            ".txt-elip.my-1:not(link-to-chapter)"
+            ".chapter-info:not(link-to-chapter)"
         );
         chapterEls.forEach((el) => {
             const originalText = el.innerText;

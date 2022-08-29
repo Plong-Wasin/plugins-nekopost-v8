@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.5
+// @version      1.0.0
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.meta.js
@@ -17,8 +17,7 @@
     function ready(fn) {
         if (document.readyState != "loading") {
             fn();
-        }
-        else {
+        } else {
             document.addEventListener("DOMContentLoaded", fn);
         }
     }
@@ -45,8 +44,10 @@
     }
     function loadMore(loadMoreEls) {
         loadMoreEls.forEach((el) => {
-            if (el.getBoundingClientRect().top - 500 < window.innerHeight &&
-                el.getBoundingClientRect().height > 0) {
+            if (
+                el.getBoundingClientRect().top - 500 < window.innerHeight &&
+                el.getBoundingClientRect().height > 0
+            ) {
                 el.click();
             }
         });
@@ -59,7 +60,9 @@
         return filteredElements;
     }
     function addTagA() {
-        const chapterEls = document.querySelectorAll(".txt-elip.my-1:not(link-to-chapter)");
+        const chapterEls = document.querySelectorAll(
+            ".chapter-info:not(link-to-chapter)"
+        );
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
             const chapter = getChapter(el.innerText);

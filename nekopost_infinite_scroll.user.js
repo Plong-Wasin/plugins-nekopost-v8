@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.3.6
+// @version      1.3.7
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
@@ -84,6 +84,7 @@
                 imgEl.loading = "lazy";
                 removeDisplayActiveClass(imgEl);
                 imgEl.classList.add(`display${displayActive}`);
+                imgEl.style.minHeight = `250px`;
             }
             if (pageEl) {
                 pageEl.innerText = `Page No.${pageNo}/${totalPages}`;

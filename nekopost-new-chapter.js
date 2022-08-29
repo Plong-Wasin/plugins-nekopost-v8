@@ -45,7 +45,7 @@
         return filteredElements;
     }
     function addTagA() {
-        const chapterEls = document.querySelectorAll(".txt-elip.my-1:not(link-to-chapter)");
+        const chapterEls = document.querySelectorAll(".chapter-info:not(link-to-chapter)");
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
             const chapter = getChapter(el.innerText);

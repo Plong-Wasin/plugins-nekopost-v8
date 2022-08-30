@@ -71,6 +71,7 @@
             el.appendChild(tagA);
             el.classList.add("link-to-chapter");
         });
+        return chapterEls;
     }
 
     function addEventWindowScroll() {
@@ -96,9 +97,26 @@
         });
     }
 
+    function addTagAByMutation() {
+        const containerEl =
+            document.querySelector<HTMLDivElement>(".container");
+        if (containerEl) {
+            const observer = new MutationObserver(() => {
+                if (addTagA()) {
+                    observer.disconnect();
+                }
+            });
+            observer.observe(containerEl, {
+                childList: true,
+                subtree: true,
+            });
+        }
+    }
+
     ready(() => {
         createStyle();
         addTagA();
+        addTagAByMutation();
         addEventWindowScroll();
         changeMenu();
     });

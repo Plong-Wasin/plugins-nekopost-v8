@@ -45,7 +45,7 @@
         return filteredElements;
     }
     function addTagA() {
-        const chapterEls = document.querySelectorAll(".chapter-info:not(link-to-chapter)");
+        const chapterEls = document.querySelectorAll(".chapter-info:not(.link-to-chapter)");
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
             const chapter = getChapter(el.innerText);
@@ -86,7 +86,7 @@
         const containerEl = document.querySelector(".container");
         if (containerEl) {
             const observer = new MutationObserver(() => {
-                if (addTagA()) {
+                if (addTagA().length > 0) {
                     observer.disconnect();
                 }
             });

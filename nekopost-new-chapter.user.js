@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0.1
+// @version      1.0.2
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
-// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.meta.js
+// @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
 // @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
 // @match        https://www.nekopost.net/novel
 // @match        https://www.nekopost.net/project
@@ -61,7 +61,7 @@
     }
     function addTagA() {
         const chapterEls = document.querySelectorAll(
-            ".chapter-info:not(link-to-chapter)"
+            ".chapter-info:not(.link-to-chapter)"
         );
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
@@ -103,7 +103,7 @@
         const containerEl = document.querySelector(".container");
         if (containerEl) {
             const observer = new MutationObserver(() => {
-                if (addTagA()) {
+                if (addTagA().length > 0) {
                     observer.disconnect();
                 }
             });

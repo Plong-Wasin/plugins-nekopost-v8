@@ -54,7 +54,7 @@
 
     function addTagA() {
         const chapterEls = document.querySelectorAll<HTMLSpanElement>(
-            ".chapter-info:not(link-to-chapter)"
+            ".chapter-info:not(.link-to-chapter)"
         );
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
@@ -102,7 +102,7 @@
             document.querySelector<HTMLDivElement>(".container");
         if (containerEl) {
             const observer = new MutationObserver(() => {
-                if (addTagA()) {
+                if (addTagA().length > 0) {
                     observer.disconnect();
                 }
             });

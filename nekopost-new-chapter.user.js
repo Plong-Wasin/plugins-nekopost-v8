@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0.2
+// @version      1.0.3
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
@@ -14,6 +14,7 @@
 // ==/UserScript==
 "use strict";
 (() => {
+    let isPageLoading = true;
     function ready(fn) {
         if (document.readyState != "loading") {
             fn();
@@ -42,12 +43,15 @@
         `;
         document.head.appendChild(style);
     }
-    function loadMore(loadMoreEls) {
+    function loadMore() {
+        const loadMoreEls = getElementsByInnerText("More", ".btn");
         loadMoreEls.forEach((el) => {
             if (
                 el.getBoundingClientRect().top - 500 < window.innerHeight &&
-                el.getBoundingClientRect().height > 0
+                el.getBoundingClientRect().height > 0 &&
+                !isPageLoading
             ) {
+                isPageLoading = true;
                 el.click();
             }
         });
@@ -81,13 +85,9 @@
         return chapterEls;
     }
     function addEventWindowScroll() {
-        const loadMoreEls = getElementsByInnerText("More");
-        const fncWindowScroll = () => {
-            loadMore(loadMoreEls);
-            addTagA();
-        };
-        window.removeEventListener("scroll", fncWindowScroll);
-        window.addEventListener("scroll", fncWindowScroll);
+        window.addEventListener("scroll", () => {
+            loadMore();
+        });
     }
     function changeMenu() {
         const menus = document.querySelectorAll("#sidebar-menu a.waves-effect");
@@ -103,9 +103,10 @@
         const containerEl = document.querySelector(".container");
         if (containerEl) {
             const observer = new MutationObserver(() => {
-                if (addTagA().length > 0) {
-                    observer.disconnect();
+                if (addTagA().length) {
+                    isPageLoading = false;
                 }
+                loadMore();
             });
             observer.observe(containerEl, {
                 childList: true,
@@ -115,7 +116,6 @@
     }
     ready(() => {
         createStyle();
-        addTagA();
         addTagAByMutation();
         addEventWindowScroll();
         changeMenu();

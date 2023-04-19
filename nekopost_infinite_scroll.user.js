@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.3.7
+// @version      1.3.8
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
@@ -80,6 +80,7 @@
             const imgEl = cloneEl.querySelector("img");
             const pageEl = cloneEl.querySelector("p");
             if (imgEl) {
+                imgEl.src = "";
                 imgEl.src = `${host}/collectManga/${projectId}/${chapterId}/${pageName}`;
                 imgEl.loading = "lazy";
                 removeDisplayActiveClass(imgEl);
@@ -146,49 +147,32 @@
         return currentIndex > 0 ? chapterList[currentIndex - 1].chapterNo : -1;
     }
     function onloadImages() {
-        const errorElements = [];
-        function load(e) {
+        function load() {
             const lazyLoadImages =
                 document.querySelectorAll("#mangaImages img") || [];
             const multipleLoad = 3;
             // nodeList to array
             const lazyLoadImagesArray = Array.from(lazyLoadImages);
-            // get index from this element
-            const index = lazyLoadImagesArray.indexOf(this);
-            // change all previous element to loading auto
-            lazyLoadImagesArray.slice(0, index).forEach((el) => {
+            // filter uncompleted image elements
+            const loadedImages = lazyLoadImagesArray.filter(
+                (image) => !image.complete
+            );
+            const loadedImagesArray = loadedImages.slice(0, multipleLoad);
+            loadedImagesArray.forEach((el) => {
                 el.loading = "eager";
             });
-            if (lazyLoadImagesArray.length > index + 1) {
-                // change next element to loading auto
-                lazyLoadImagesArray[index + 1].loading = "eager";
-            }
-            // find incomplete
-            const incompleteElements = lazyLoadImagesArray.filter(
-                (el) => el.complete === false
-            );
-            if (incompleteElements) {
-                incompleteElements
-                    .slice(0, multipleLoad + errorElements.length)
-                    .forEach((el) => {
-                        el.loading = "eager";
-                    });
-            }
         }
-        function error(e) {
+        function error() {
             setTimeout(() => {
                 const errorCount = +(this.dataset.errorCount || 0);
                 if (errorCount < 3) {
                     // push to error elements if not exist
-                    if (!errorElements.includes(this)) {
-                        errorElements.push(this);
-                    }
                     const src = this.src;
                     this.src = src;
                     this.dataset.errorCount = (errorCount + 1).toString();
                 }
             }, 1000);
-            load.call(this, e);
+            load.call(this);
         }
         function addEvent(eventName, handler) {
             const rootEl = document.querySelector("#mangaImages");
@@ -267,6 +251,11 @@
             }
         }
     }
+    function getIncompleteImageEls() {
+        const imageEls = document.querySelectorAll("#mangaImages img");
+        const imageElsArray = Array.from(imageEls);
+        return imageElsArray.filter((el) => !el.complete);
+    }
     function loadAllChapterBtn(projectDetails) {
         const btnEl = document.querySelector(
             ".layout-helper.svelte-ixpqjn button"
@@ -277,34 +266,31 @@
             cloneEl.innerText = "All";
             cloneEl.style.marginRight = "5px";
             cloneEl.id = "loadAllChapterBtn";
-            cloneEl.addEventListener("click", function loadAll() {
-                void (async () => {
-                    while (chapterNo > 0) {
-                        chapterNo = getNextChapterNo(chapterNo, projectDetails);
-                        if (chapterNo > 0) {
-                            await loadChapter(chapterNo, projectDetails);
-                        } else {
-                            break;
-                        }
-                    }
-                    const lazyLoadImage = document.querySelector(
-                        "img[loading='lazy']"
-                    );
-                    if (lazyLoadImage) {
-                        lazyLoadImage.loading = "eager";
-                    }
-                    cloneEl.removeEventListener("click", loadAll);
-                    cloneEl.remove();
-                })();
-            });
+            cloneEl.addEventListener("click", loadAll);
             if (getNextChapterNo(chapterNo, projectDetails) > -1) {
                 const parentEl = document.querySelector(
                     ".layout-helper.svelte-ixpqjn"
                 );
-                if (parentEl) {
-                    parentEl.insertBefore(cloneEl, parentEl.firstChild);
-                }
+                parentEl?.insertBefore(cloneEl, parentEl.firstChild);
             }
+        }
+        function loadAll() {
+            void (async () => {
+                while (chapterNo > 0) {
+                    chapterNo = getNextChapterNo(chapterNo, projectDetails);
+                    if (chapterNo > 0) {
+                        await loadChapter(chapterNo, projectDetails);
+                    } else {
+                        break;
+                    }
+                }
+                const imageEls = getIncompleteImageEls();
+                if (imageEls) {
+                    imageEls[0].loading = "eager";
+                }
+                cloneEl.removeEventListener("click", loadAll);
+                cloneEl.remove();
+            })();
         }
     }
     function changeUrl(chapter) {

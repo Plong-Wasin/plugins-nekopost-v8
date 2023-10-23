@@ -25,27 +25,27 @@
         const style = document.createElement("style");
         style.innerHTML = `
             .link-to-chapter>a:visited {
-                color: var(--bs-green);
+                color: rgb(16 185 129);
             }
         `;
         document.head.appendChild(style);
     }
 
     function loadMore() {
-        const loadMoreEls = getElementsByInnerText(
-            "More",
-            ".btn"
-        ) as NodeListOf<HTMLButtonElement>;
-        loadMoreEls.forEach((el) => {
+        const loadMoreButton = document.querySelector<HTMLButtonElement>(
+            ".w-full.rounded-md.border-b-2"
+        );
+        if (loadMoreButton) {
             if (
-                el.getBoundingClientRect().top - 500 < window.innerHeight &&
-                el.getBoundingClientRect().height > 0 &&
+                loadMoreButton.getBoundingClientRect().top - 500 <
+                    window.innerHeight &&
+                loadMoreButton.getBoundingClientRect().height > 0 &&
                 !isPageLoading
             ) {
                 isPageLoading = true;
-                el.click();
+                loadMoreButton.click();
             }
-        });
+        }
     }
 
     function getElementsByInnerText(
@@ -61,7 +61,7 @@
 
     function addTagA() {
         const chapterEls = document.querySelectorAll<HTMLSpanElement>(
-            ".chapter-info:not(.link-to-chapter)"
+            ".cursor-pointer.text-white-900.text-xs.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)"
         );
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
@@ -99,7 +99,7 @@
 
     function addTagAByMutation() {
         const containerEl =
-            document.querySelector<HTMLDivElement>(".container");
+            document.querySelector<HTMLDivElement>(".svelte-n3lslu");
         if (containerEl) {
             const observer = new MutationObserver(() => {
                 if (addTagA().length) {

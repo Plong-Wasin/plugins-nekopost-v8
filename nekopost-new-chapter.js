@@ -25,21 +25,22 @@
         const style = document.createElement("style");
         style.innerHTML = `
             .link-to-chapter>a:visited {
-                color: var(--bs-green);
+                color: rgb(16 185 129);
             }
         `;
         document.head.appendChild(style);
     }
     function loadMore() {
-        const loadMoreEls = getElementsByInnerText("More", ".btn");
-        loadMoreEls.forEach((el) => {
-            if (el.getBoundingClientRect().top - 500 < window.innerHeight &&
-                el.getBoundingClientRect().height > 0 &&
+        const loadMoreButton = document.querySelector(".w-full.rounded-md.border-b-2");
+        if (loadMoreButton) {
+            if (loadMoreButton.getBoundingClientRect().top - 500 <
+                window.innerHeight &&
+                loadMoreButton.getBoundingClientRect().height > 0 &&
                 !isPageLoading) {
                 isPageLoading = true;
-                el.click();
+                loadMoreButton.click();
             }
-        });
+        }
     }
     function getElementsByInnerText(text, selector = "*") {
         const elements = document.querySelectorAll(selector);
@@ -49,7 +50,7 @@
         return filteredElements;
     }
     function addTagA() {
-        const chapterEls = document.querySelectorAll(".chapter-info:not(.link-to-chapter)");
+        const chapterEls = document.querySelectorAll(".cursor-pointer.text-white-900.text-xs.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)");
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
             const chapter = getChapter(el.innerText);
@@ -83,7 +84,7 @@
         });
     }
     function addTagAByMutation() {
-        const containerEl = document.querySelector(".container");
+        const containerEl = document.querySelector(".svelte-n3lslu");
         if (containerEl) {
             const observer = new MutationObserver(() => {
                 if (addTagA().length) {

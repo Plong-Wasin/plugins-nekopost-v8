@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0.3
+// @version      1.0.4
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
@@ -38,23 +38,26 @@
         const style = document.createElement("style");
         style.innerHTML = `
             .link-to-chapter>a:visited {
-                color: var(--bs-green);
+                color: rgb(16 185 129);
             }
         `;
         document.head.appendChild(style);
     }
     function loadMore() {
-        const loadMoreEls = getElementsByInnerText("More", ".btn");
-        loadMoreEls.forEach((el) => {
+        const loadMoreButton = document.querySelector(
+            ".w-full.rounded-md.border-b-2"
+        );
+        if (loadMoreButton) {
             if (
-                el.getBoundingClientRect().top - 500 < window.innerHeight &&
-                el.getBoundingClientRect().height > 0 &&
+                loadMoreButton.getBoundingClientRect().top - 500 <
+                    window.innerHeight &&
+                loadMoreButton.getBoundingClientRect().height > 0 &&
                 !isPageLoading
             ) {
                 isPageLoading = true;
-                el.click();
+                loadMoreButton.click();
             }
-        });
+        }
     }
     function getElementsByInnerText(text, selector = "*") {
         const elements = document.querySelectorAll(selector);
@@ -65,7 +68,7 @@
     }
     function addTagA() {
         const chapterEls = document.querySelectorAll(
-            ".chapter-info:not(.link-to-chapter)"
+            ".cursor-pointer.text-white-900.text-xs.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)"
         );
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
@@ -100,7 +103,7 @@
         });
     }
     function addTagAByMutation() {
-        const containerEl = document.querySelector(".container");
+        const containerEl = document.querySelector(".svelte-n3lslu");
         if (containerEl) {
             const observer = new MutationObserver(() => {
                 if (addTagA().length) {

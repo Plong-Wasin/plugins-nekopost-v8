@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         nekopost_infinite_scroll
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.3.8
+// @version      1.3.9
 // @description  nekopost-next-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
 // @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_infinite_scroll.user.js
 // @match        https://www.nekopost.net/manga/*/*
+// @match        https://2nd.nekopost.net/manga/*/*
 // @grant        window.close
 // ==/UserScript==
 "use strict";
@@ -16,7 +17,7 @@
     const splitUrl = window.location.pathname.split("/");
     const projectId = splitUrl[splitUrl.length - 2];
     let chapterNo = parseFloat(splitUrl[splitUrl.length - 1]);
-    const mangaPageSelector = ".t-center.item-content";
+    const mangaPageSelector = ".w-full.border-0.border-white .mb-10";
     function ready(fn) {
         if (document.readyState != "loading") {
             fn();
@@ -57,7 +58,9 @@
             `${mangaPageSelector}:not(#mangaImages ${mangaPageSelector})`
         );
         els.forEach((el) => {
-            el.remove();
+            if (!document.querySelector("#mangaImages")?.contains(el)) {
+                el.remove();
+            }
         });
     }
     function removeDisplayActiveClass(el) {
@@ -78,7 +81,7 @@
         }
         if (cloneEl) {
             const imgEl = cloneEl.querySelector("img");
-            const pageEl = cloneEl.querySelector("p");
+            const pageEl = cloneEl.querySelector(".text-2xl");
             if (imgEl) {
                 imgEl.src = "";
                 imgEl.src = `${host}/collectManga/${projectId}/${chapterId}/${pageName}`;
@@ -108,6 +111,7 @@
             return true;
         }
         await sleep(500);
+        console.log(1);
         return false;
     }
     async function loadChapter(chapterNo, projectDetails) {
@@ -125,12 +129,12 @@
             chapterInfo.pageItem.sort((a, b) => a.pageNo - b.pageNo);
             if (chapterInfo) {
                 const totalPages = chapterInfo.pageItem.length;
-                chapterInfo.pageItem.forEach((page) => {
+                chapterInfo.pageItem.forEach((page, index) => {
                     insertPage(
                         projectId,
                         chapterId,
                         page.pageName || page.fileName || "",
-                        page.pageNo,
+                        index + 1,
                         totalPages
                     );
                 });
@@ -355,15 +359,15 @@
     }
     ready(() => {
         void (async () => {
-            addEventChangeSize();
+            // addEventChangeSize();
             const projectDetails = await getProjectDetailFull(projectId);
             while (!(await checkLoadState()));
             prototypeEl = document
                 .querySelector(mangaPageSelector)
                 ?.cloneNode(true);
             createElementPage();
-            closeBtn();
-            loadAllChapterBtn(projectDetails);
+            // closeBtn();
+            // loadAllChapterBtn(projectDetails);
             onloadImages();
             host = new URL(
                 document.querySelector(

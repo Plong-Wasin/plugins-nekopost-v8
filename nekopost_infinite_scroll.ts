@@ -77,7 +77,7 @@ interface PageItem {
     const splitUrl = window.location.pathname.split("/");
     const projectId: string | number = splitUrl[splitUrl.length - 2];
     let chapterNo: string | number = parseFloat(splitUrl[splitUrl.length - 1]);
-    const mangaPageSelector = ".t-center.item-content";
+    const mangaPageSelector = ".w-full.border-0.border-white .mb-10";
     function ready(fn: () => void): void {
         if (document.readyState != "loading") {
             fn();
@@ -129,7 +129,9 @@ interface PageItem {
             `${mangaPageSelector}:not(#mangaImages ${mangaPageSelector})`
         );
         els.forEach((el) => {
-            el.remove();
+            if (!document.querySelector("#mangaImages")?.contains(el)) {
+                el.remove();
+            }
         });
     }
 
@@ -158,7 +160,7 @@ interface PageItem {
         }
         if (cloneEl) {
             const imgEl = cloneEl.querySelector("img");
-            const pageEl = cloneEl.querySelector("p");
+            const pageEl = cloneEl.querySelector<HTMLDivElement>(".text-2xl");
             if (imgEl) {
                 imgEl.src = "";
                 imgEl.src = `${host}/collectManga/${projectId}/${chapterId}/${pageName}`;
@@ -190,6 +192,7 @@ interface PageItem {
             return true;
         }
         await sleep(500);
+        console.log(1);
         return false;
     }
 
@@ -211,12 +214,12 @@ interface PageItem {
             chapterInfo.pageItem.sort((a, b) => a.pageNo - b.pageNo);
             if (chapterInfo) {
                 const totalPages = chapterInfo.pageItem.length;
-                chapterInfo.pageItem.forEach((page) => {
+                chapterInfo.pageItem.forEach((page, index) => {
                     insertPage(
                         projectId,
                         chapterId,
                         page.pageName || page.fileName || "",
-                        page.pageNo,
+                        index + 1,
                         totalPages
                     );
                 });
@@ -450,15 +453,15 @@ interface PageItem {
     }
     ready(() => {
         void (async () => {
-            addEventChangeSize();
+            // addEventChangeSize();
             const projectDetails = await getProjectDetailFull(projectId);
             while (!(await checkLoadState()));
             prototypeEl = document
                 .querySelector(mangaPageSelector)
                 ?.cloneNode(true);
             createElementPage();
-            closeBtn();
-            loadAllChapterBtn(projectDetails);
+            // closeBtn();
+            // loadAllChapterBtn(projectDetails);
             onloadImages();
             host = new URL(
                 document.querySelector<HTMLImageElement>(

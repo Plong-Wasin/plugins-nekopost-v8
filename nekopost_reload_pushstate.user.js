@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost_reload_pushstate
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0.0
+// @version      1.0.1
 // @description  nekopost_reload_pushstate
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost_reload_pushstate.user.js
@@ -18,21 +18,23 @@
     function ready(fn) {
         if (document.readyState != "loading") {
             fn();
-        }
-        else {
+        } else {
             document.addEventListener("DOMContentLoaded", fn);
         }
     }
-    ready(() => {
-        var rs = history.pushState;
-        history.pushState = function (state, unused, url) {
-            rs.apply(history, arguments);
-            if (typeof state === "object" &&
-                state["sveltekit:index"] &&
-                typeof url === "object" &&
-                url?.href) {
-                window.location.href = url?.href;
+    function delegate(el, event, selector, fn) {
+        el.addEventListener(event, function (e) {
+            if (e.target.closest(selector)) {
+                fn.call(this, e);
             }
-        };
+        });
+    }
+    ready(() => {
+        delegate(document, "click", "a", function (e) {
+            const target = e.target.closest("a");
+            if (target?.closest(".listChapter")) {
+                window.location.href = target.href;
+            }
+        });
     });
 })();

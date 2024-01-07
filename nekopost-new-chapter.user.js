@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0.4
+// @version      1.0.5
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
@@ -103,7 +103,7 @@
         });
     }
     function addTagAByMutation() {
-        const containerEl = document.querySelector(".svelte-n3lslu");
+        const containerEl = document.querySelector(".svelte-rn2hpa");
         if (containerEl) {
             const observer = new MutationObserver(() => {
                 if (addTagA().length) {

@@ -99,7 +99,7 @@
 
     function addTagAByMutation() {
         const containerEl =
-            document.querySelector<HTMLDivElement>(".svelte-n3lslu");
+            document.querySelector<HTMLDivElement>(".svelte-rn2hpa");
         if (containerEl) {
             const observer = new MutationObserver(() => {
                 if (addTagA().length) {

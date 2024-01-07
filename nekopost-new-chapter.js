@@ -84,7 +84,7 @@
         });
     }
     function addTagAByMutation() {
-        const containerEl = document.querySelector(".svelte-n3lslu");
+        const containerEl = document.querySelector(".svelte-rn2hpa");
         if (containerEl) {
             const observer = new MutationObserver(() => {
                 if (addTagA().length) {

@@ -1,6 +1,7 @@
 "use strict";
 (() => {
     let isPageLoading = true;
+    const containerElSelector = "div.grid.grid-cols-3.md\\:grid-cols-4.lg\\:grid-cols-5.xl\\:grid-cols-6.gap-0.first\\:mt-0.mb-4";
     function ready(fn) {
         if (document.readyState != "loading") {
             fn();
@@ -42,13 +43,6 @@
             }
         }
     }
-    function getElementsByInnerText(text, selector = "*") {
-        const elements = document.querySelectorAll(selector);
-        const filteredElements = Array.from(elements).filter((el) => {
-            return el.innerText === text;
-        });
-        return filteredElements;
-    }
     function addTagA() {
         const chapterEls = document.querySelectorAll(".cursor-pointer.text-white-900.text-xs.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)");
         chapterEls.forEach((el) => {
@@ -84,21 +78,50 @@
         });
     }
     function addTagAByMutation() {
-        const containerEl = document.querySelector(".svelte-rn2hpa");
+        const containerEl = document.querySelector(containerElSelector);
         if (containerEl) {
-            const observer = new MutationObserver(() => {
-                if (addTagA().length) {
+            function handlePageLoading() {
+                // Check if tag A is present and non-empty
+                const tagALength = addTagA().length;
+                // If tag A is found, page loading is considered completed
+                if (tagALength) {
                     isPageLoading = false;
                 }
+                // Load additional content
                 loadMore();
+            }
+            const observer = new MutationObserver(() => {
+                handlePageLoading();
             });
             observer.observe(containerEl, {
                 childList: true,
                 subtree: true,
             });
+            handlePageLoading();
         }
     }
-    ready(() => {
+    function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+    /**
+     * Waits until a container element matching the specified selector is found in the document.
+     * Resolves when the container element is found.
+     */
+    async function waitForContainerElement() {
+        // Continuously loop until the container element is found
+        while (true) {
+            // Attempt to find the container element in the document
+            const containerElement = document.querySelector(containerElSelector);
+            // If the container element is found, exit the loop
+            if (containerElement) {
+                break;
+            }
+            // Wait for a short period before attempting again to avoid CPU usage
+            await sleep(100);
+        }
+    }
+    ready(async () => {
+        await waitForContainerElement();
         createStyle();
         addTagAByMutation();
         addEventWindowScroll();

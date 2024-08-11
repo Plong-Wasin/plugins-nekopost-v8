@@ -14,34 +14,35 @@
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
     /**
-     * Hides all page block elements initially, then displays them in reverse order.
-     * Ensures that each block containing an image is only displayed after the image source is loaded.
+     * Processes each page block element by attempting to load any associated images
+     * and then toggling the display style of the elements.
      *
-     * @param pageBlockElements - Collection of HTML div elements representing page blocks.
+     * @param pageBlockElements - A NodeList of HTML div elements representing page blocks.
      */
     async function processPageBlocks(pageBlockElements) {
-        // Convert the HTMLCollection to an array for easier manipulation
+        // Convert the NodeList to an array for easier iteration
         const pageBlockArray = Array.from(pageBlockElements);
-        // Hide all page block elements
-        pageBlockArray.forEach((blockElement) => {
-            blockElement.style.display = "none";
-        });
-        // Display each page block in reverse order, ensuring image sources are loaded
-        for (let i = pageBlockArray.length - 1; i >= 0; i--) {
+        // Iterate through each page block element
+        for (let i = 0; i < pageBlockArray.length; i++) {
             const blockElement = pageBlockArray[i];
-            blockElement.style.display = "flex";
-            let j = 0;
-            //   Wait until an image within the block has its source loaded
-            while (j < 100) {
-                const imageElement = blockElement.querySelector("img");
+            const imageElement = blockElement.querySelector("img");
+            let retryCount = 0;
+            const maxRetries = 100;
+            // Retry loading the image until it has a source or the max retry limit is reached
+            while (retryCount < maxRetries) {
                 if (imageElement?.src) {
                     break;
                 }
-                // Wait for 100 milliseconds before checking again
                 await sleep(10);
-                j++;
+                retryCount++;
             }
+            // Hide the current page block element
+            blockElement.style.display = "none";
         }
+        // Display all page block elements
+        pageBlockArray.forEach((blockElement) => {
+            blockElement.style.display = "flex";
+        });
     }
     /**
      * Hides all page block elements by setting their display style to "none".

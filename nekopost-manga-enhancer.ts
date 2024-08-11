@@ -115,10 +115,10 @@
     const mangaBlockEl = document.querySelector(
       ".w-full.h-full.bg-gray-100.dark\\:bg-gray-800.min-h-screen"
     );
-    settingUI();
     const observer = new MutationObserver((mutations, observer) => {
       if ((mangaBlockEl?.querySelectorAll("img")?.length ?? 0) > 2) {
         observer.disconnect();
+        settingUI();
         const pageNoBlockEls = document.querySelectorAll<HTMLDivElement>(
           ".lg\\:inline-block.flex.flex-col.items-end"
         );

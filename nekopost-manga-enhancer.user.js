@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-manga-enhancer
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.0.4
+// @version      0.0.5
 // @description  nekopost-manga-enhancer
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-manga-enhancer.user.js
@@ -117,6 +117,22 @@
                 settingUI();
                 const pageNoBlockEls = document.querySelectorAll(".lg\\:inline-block.flex.flex-col.items-end");
                 const pageBlockEls = document.querySelectorAll(".flex.flex-col.lg\\:flex-row");
+                pageBlockEls.forEach((el) => {
+                    const imageEl = el.querySelector("img");
+                    if (imageEl) {
+                        let retryCount = 0;
+                        const maxRetries = 3;
+                        imageEl.onerror = () => {
+                            if (retryCount < maxRetries) {
+                                retryCount++;
+                                imageEl.src = imageEl.src;
+                            }
+                            else {
+                                imageEl.onerror = null;
+                            }
+                        };
+                    }
+                });
                 if (!isCheckedShowPageNo) {
                     hidePageBlockElements(pageNoBlockEls);
                 }

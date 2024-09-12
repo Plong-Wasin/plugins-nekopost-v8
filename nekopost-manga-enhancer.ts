@@ -128,6 +128,21 @@
         const pageBlockEls = document.querySelectorAll<HTMLDivElement>(
           ".flex.flex-col.lg\\:flex-row"
         );
+        pageBlockEls.forEach((el) => {
+          const imageEl = el.querySelector("img");
+          if (imageEl) {
+            let retryCount = 0;
+            const maxRetries = 3;
+            imageEl.onerror = () => {
+              if (retryCount < maxRetries) {
+                retryCount++;
+                imageEl.src = imageEl.src;
+              } else {
+                imageEl.onerror = null;
+              }
+            };
+          }
+        });
         if (!isCheckedShowPageNo) {
           hidePageBlockElements(pageNoBlockEls);
         }

@@ -1,6 +1,7 @@
 (() => {
   let isCheckedShowPageNo = false;
   let isCheckedEagerLoad = false;
+  let url: URL = new URL(window.location.href);
   function ready(fn: () => void): void {
     if (document.readyState != "loading") {
       fn();
@@ -113,8 +114,7 @@
       }
     });
   }
-
-  ready(() => {
+  function triggerAction() {
     const mangaBlockEl = document.querySelector(
       ".w-full.h-full.bg-gray-100.dark\\:bg-gray-800.min-h-screen"
     );
@@ -143,5 +143,35 @@
         subtree: true,
       });
     }
+  }
+  // Function to observe changes in the URL and trigger actions based on certain conditions
+  function startUrlObserver() {
+    // Helper function to check if the current URL matches the expected manga or comic format
+    const isMangaOrComicUrl = (): boolean => {
+      return url.pathname.match(/^\/(manga|comic)\/\d+\/\d/) !== null;
+    };
+
+    // If the current URL matches the expected format, run the desired action
+    if (isMangaOrComicUrl()) {
+      triggerAction();
+    }
+
+    // Set up an interval to continuously check if the URL has changed
+    setInterval(() => {
+      // If the URL has changed, update the url object and check again
+      if (window.location.pathname !== url.pathname) {
+        url = new URL(window.location.href);
+
+        // If the new URL matches the expected format, trigger the action
+        if (isMangaOrComicUrl()) {
+          triggerAction();
+        }
+      }
+    }, 100); // Check every second
+  }
+
+  // Call the observer once the page is fully loaded and ready
+  ready(() => {
+    startUrlObserver();
   });
 })();

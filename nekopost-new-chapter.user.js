@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0.6
+// @version      1.0.7
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
@@ -48,8 +48,7 @@
     function loadMore() {
         const loadMoreButton = document.querySelector(".w-full.rounded-md.border-b-2");
         if (loadMoreButton) {
-            if (loadMoreButton.getBoundingClientRect().top - 500 <
-                window.innerHeight &&
+            if (loadMoreButton.getBoundingClientRect().top - 500 < window.innerHeight &&
                 loadMoreButton.getBoundingClientRect().height > 0 &&
                 !isPageLoading) {
                 isPageLoading = true;
@@ -58,7 +57,7 @@
         }
     }
     function addTagA() {
-        const chapterEls = document.querySelectorAll(".cursor-pointer.text-white-900.text-xs.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)");
+        const chapterEls = document.querySelectorAll(".cursor-pointer.text-slate-300.text-xs.xl\\:px-2.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)");
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
             const chapter = getChapter(el.innerText);
@@ -93,17 +92,17 @@
     }
     function addTagAByMutation() {
         const containerEl = document.querySelector(containerElSelector);
-        if (containerEl) {
-            function handlePageLoading() {
-                // Check if tag A is present and non-empty
-                const tagALength = addTagA().length;
-                // If tag A is found, page loading is considered completed
-                if (tagALength) {
-                    isPageLoading = false;
-                }
-                // Load additional content
-                loadMore();
+        function handlePageLoading() {
+            // Check if tag A is present and non-empty
+            const tagALength = addTagA().length;
+            // If tag A is found, page loading is considered completed
+            if (tagALength) {
+                isPageLoading = false;
             }
+            // Load additional content
+            loadMore();
+        }
+        if (containerEl) {
             const observer = new MutationObserver(() => {
                 handlePageLoading();
             });

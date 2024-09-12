@@ -1,18 +1,19 @@
 // ==UserScript==
 // @name         nekopost-manga-enhancer
 // @namespace    https://github.com/Plong-Wasin
-// @version      0.0.3
+// @version      0.0.4
 // @description  nekopost-manga-enhancer
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-manga-enhancer.user.js
 // @downloadURL  https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-manga-enhancer.user.js
-// @match        https://www.nekopost.net/manga/*/*
-// @match        https://2nd.nekopost.net/manga/*/*
+// @match        https://www.nekopost.net/*
+// @match        https://2nd.nekopost.net/*
 // ==/UserScript==
 "use strict";
 (() => {
     let isCheckedShowPageNo = false;
     let isCheckedEagerLoad = false;
+    let url = new URL(window.location.href);
     function ready(fn) {
         if (document.readyState != "loading") {
             fn();
@@ -108,7 +109,7 @@
             }
         });
     }
-    ready(() => {
+    function triggerAction() {
         const mangaBlockEl = document.querySelector(".w-full.h-full.bg-gray-100.dark\\:bg-gray-800.min-h-screen");
         const observer = new MutationObserver((mutations, observer) => {
             if ((mangaBlockEl?.querySelectorAll("img")?.length ?? 0) > 2) {
@@ -131,5 +132,31 @@
                 subtree: true,
             });
         }
+    }
+    // Function to observe changes in the URL and trigger actions based on certain conditions
+    function startUrlObserver() {
+        // Helper function to check if the current URL matches the expected manga or comic format
+        const isMangaOrComicUrl = () => {
+            return url.pathname.match(/^\/(manga|comic)\/\d+\/\d/) !== null;
+        };
+        // If the current URL matches the expected format, run the desired action
+        if (isMangaOrComicUrl()) {
+            triggerAction();
+        }
+        // Set up an interval to continuously check if the URL has changed
+        setInterval(() => {
+            // If the URL has changed, update the url object and check again
+            if (window.location.pathname !== url.pathname) {
+                url = new URL(window.location.href);
+                // If the new URL matches the expected format, trigger the action
+                if (isMangaOrComicUrl()) {
+                    triggerAction();
+                }
+            }
+        }, 100); // Check every second
+    }
+    // Call the observer once the page is fully loaded and ready
+    ready(() => {
+        startUrlObserver();
     });
 })();

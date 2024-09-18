@@ -43,7 +43,7 @@
         }
     }
     function addTagA() {
-        const chapterEls = document.querySelectorAll(".cursor-pointer.text-slate-300.text-xs.xl\\:px-2.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)");
+        const chapterEls = document.querySelectorAll(".cursor-pointer.text-gray-300.text-xs.xl\\:px-2.leading-5.text-ellipsis.overflow-hidden.h-4:not(.link-to-chapter)");
         chapterEls.forEach((el) => {
             const originalText = el.innerText;
             const chapter = getChapter(el.innerText);

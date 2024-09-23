@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nekopost-new-chapter
 // @namespace    https://github.com/Plong-Wasin
-// @version      1.0.8
+// @version      1.1.0
 // @description  nekopost-new-chapter
 // @author       Plong-Wasin
 // @updateURL    https://github.com/Plong-Wasin/plugins-nekopost-v8/raw/main/nekopost-new-chapter.user.js
@@ -90,27 +90,37 @@
             });
         });
     }
-    function addTagAByMutation() {
-        const containerEl = document.querySelector(containerElSelector);
-        function handlePageLoading() {
-            // Check if tag A is present and non-empty
-            const tagALength = addTagA().length;
-            // If tag A is found, page loading is considered completed
-            if (tagALength) {
-                isPageLoading = false;
-            }
-            // Load additional content
-            loadMore();
+    function handlePageLoading() {
+        // Check if tag A is present and non-empty
+        const tagALength = addTagA().length;
+        // If tag A is found, page loading is considered completed
+        if (tagALength) {
+            isPageLoading = false;
         }
+        // Load additional content
+        loadMore();
+    }
+    function updateHttpLinksToHttps() {
+        // Select all anchor elements with href starting with 'http://'
+        const httpLinks = document.querySelectorAll('a[href^="http://"]');
+        // Loop through each element and replace 'http://' with 'https://' in the href attribute
+        httpLinks.forEach((anchorElement) => {
+            anchorElement.href = anchorElement.href.replace("http://", "https://");
+        });
+    }
+    function initializeContentObserver() {
+        const containerEl = document.querySelector(containerElSelector);
         if (containerEl) {
             const observer = new MutationObserver(() => {
                 handlePageLoading();
+                updateHttpLinksToHttps();
             });
             observer.observe(containerEl, {
                 childList: true,
                 subtree: true,
             });
             handlePageLoading();
+            updateHttpLinksToHttps();
         }
     }
     function sleep(ms) {
@@ -122,7 +132,7 @@
      */
     async function waitForContainerElement() {
         // Continuously loop until the container element is found
-        while (true) {
+        for (;;) {
             // Attempt to find the container element in the document
             const containerElement = document.querySelector(containerElSelector);
             // If the container element is found, exit the loop
@@ -136,7 +146,7 @@
     ready(async () => {
         await waitForContainerElement();
         createStyle();
-        addTagAByMutation();
+        initializeContentObserver();
         addEventWindowScroll();
         changeMenu();
     });

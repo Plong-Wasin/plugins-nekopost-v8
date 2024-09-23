@@ -160,8 +160,31 @@
             }
         }, 100); // Check every second
     }
+    function observeAndUpdateHttpLinks() {
+        // Function to update all HTTP links to HTTPS
+        function updateHttpLinks() {
+            // Select all anchor elements with href starting with 'http://'
+            const httpLinks = document.querySelectorAll('a[href^="http://"]');
+            // Loop through each element and replace 'http://' with 'https://' in the href attribute
+            httpLinks.forEach((anchorElement) => {
+                anchorElement.href = anchorElement.href.replace("http://", "https://");
+            });
+        }
+        // Create a MutationObserver to detect changes in the document body
+        const httpLinkObserver = new MutationObserver(() => {
+            updateHttpLinks(); // Run the update function whenever mutations are detected
+        });
+        // Start observing the body element for changes to child elements and its subtree
+        httpLinkObserver.observe(document.body, {
+            childList: true, // Observe direct child elements
+            subtree: true, // Also observe changes in descendants
+        });
+        // Call the function initially to update any existing links
+        updateHttpLinks();
+    }
     // Call the observer once the page is fully loaded and ready
     ready(() => {
         startUrlObserver();
+        observeAndUpdateHttpLinks();
     });
 })();

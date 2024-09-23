@@ -108,7 +108,7 @@
             // Check if the parent div has any inner text
             if (parentDiv && avatarImage && parentDiv?.innerText.trim().length > 0) {
                 // Stop observing if we found a valid avatar
-                avatarObserver.disconnect();
+                // avatarObserver.disconnect();
                 // Extract the source URL of the avatar image
                 const avatarUrl = avatarImage.src;
                 // Match and extract the number from the avatar image URL
@@ -116,17 +116,23 @@
                 const avatarNumber = numberMatch ? numberMatch[1] : null;
                 // If a number was successfully extracted, create a link element
                 if (avatarNumber) {
+                    avatarObserver.disconnect();
                     const linkElement = document.createElement("a");
                     linkElement.href = `https://www.nekopost.net/editor/${avatarNumber}`;
                     // Clone the original parent div and append it to the link
                     linkElement.appendChild(parentDiv.cloneNode(true));
                     // Replace the original parent div with the new link element
                     parentDiv.replaceWith(linkElement);
+                    // Start observing the body element for changes to child elements and its subtree
+                    avatarObserver.observe(document, {
+                        childList: true, // Observe direct child elements
+                        subtree: true, // Also observe changes in descendants
+                    });
                 }
             }
         });
         // Start observing the body element for changes to child elements and its subtree
-        avatarObserver.observe(document.body, {
+        avatarObserver.observe(document, {
             childList: true, // Observe direct child elements
             subtree: true, // Also observe changes in descendants
         });

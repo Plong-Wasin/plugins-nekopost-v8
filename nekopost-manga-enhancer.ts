@@ -114,6 +114,50 @@
       }
     });
   }
+  function observeAndReplaceAvatarLinks() {
+    // Create a MutationObserver to monitor changes in the document body
+    const avatarObserver = new MutationObserver(() => {
+      // Select the image element that has an avatar in its source
+      const avatarImage = document.querySelector<HTMLImageElement>(
+        'img[src*="avatar/avatar"]'
+      );
+
+      // Find the parent div of the avatar image
+      const parentDiv = avatarImage?.parentElement?.querySelector("div");
+
+      // Check if the parent div has any inner text
+      if (parentDiv && avatarImage && parentDiv?.innerText.trim().length > 0) {
+        // Stop observing if we found a valid avatar
+        avatarObserver.disconnect();
+
+        // Extract the source URL of the avatar image
+        const avatarUrl = avatarImage.src;
+
+        // Match and extract the number from the avatar image URL
+        const numberMatch = avatarUrl.match(/avatar_(\d+)\.jpg/);
+        const avatarNumber = numberMatch ? numberMatch[1] : null;
+
+        // If a number was successfully extracted, create a link element
+        if (avatarNumber) {
+          const linkElement = document.createElement("a");
+          linkElement.href = `https://www.nekopost.net/editor/${avatarNumber}`;
+
+          // Clone the original parent div and append it to the link
+          linkElement.appendChild(parentDiv.cloneNode(true));
+
+          // Replace the original parent div with the new link element
+          parentDiv.replaceWith(linkElement);
+        }
+      }
+    });
+
+    // Start observing the body element for changes to child elements and its subtree
+    avatarObserver.observe(document.body, {
+      childList: true, // Observe direct child elements
+      subtree: true, // Also observe changes in descendants
+    });
+  }
+
   function triggerAction() {
     const mangaBlockEl = document.querySelector(
       ".w-full.h-full.bg-gray-100.dark\\:bg-gray-800.min-h-screen"
@@ -122,6 +166,7 @@
       if ((mangaBlockEl?.querySelectorAll("img")?.length ?? 0) > 2) {
         observer.disconnect();
         settingUI();
+        observeAndReplaceAvatarLinks();
         const pageNoBlockEls = document.querySelectorAll<HTMLDivElement>(
           ".lg\\:inline-block.flex.flex-col.items-end"
         );

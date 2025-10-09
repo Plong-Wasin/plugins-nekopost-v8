@@ -1,10 +1,11 @@
 {
     "name": "plugins-nekopost-v8",
     "version": "1.0.0",
-    "description": "ทำเองใช้เองบนมือถือ <br>\r nekopost-add-style.user.js : เพิ่มstyle สำหรับตอนที่อ่านแล้ว + hover + กดซ่อนsidebar + infinite scroll <br>\r nekopost-next-chapter.user.js : เลื่อนลงมาถึงตอนกดปุ่มแล้ว กดปุ่มให้เอง แล้วแก้ปุ่มcomment เป็น ปิด",
+    "description": "ทำเองใช้เองบนมือถือ - User scripts สำหรับเว็บ Nekopost",
     "main": ".eslintrc.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc && mv nekopost-href-modifier.js nekopost-href-modifier.user.js"
     },
     "repository": {
         "type": "git",

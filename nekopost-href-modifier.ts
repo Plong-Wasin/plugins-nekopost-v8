@@ -5,11 +5,21 @@
 // @description  Modify href attributes for nekopost project links with SPA support
 // @author       You
 // @match        https://www.nekopost.net/*
-// @grant        none
+// @grant        GM_addStyle
 // ==/UserScript==
 
 (function () {
     'use strict';
+
+    // Add CSS for visited links with specific class
+    GM_addStyle(`
+        a.nekopost-chapter-link:visited {
+            color: #6b7280 !important;
+        }
+        a.nekopost-chapter-link:visited > div:first-child {
+            color: #6b7280 !important;
+        }
+    `);
 
     // Regex pattern to match URLs like https://www.nekopost.net/project/15672/87 or https://www.nekopost.net/project/15672/87.5
     const URL_PATTERN = /^https:\/\/www\.nekopost\.net\/project\/\d+\/\d+(?:\.\d+)?\/?$/;
@@ -37,6 +47,9 @@
 
             // Set new href to "./" + lastPart
             link.setAttribute('href', `./${lastPart}`);
+
+            // Add the CSS class for visited styling
+            link.classList.add('nekopost-chapter-link');
         }
     }
 

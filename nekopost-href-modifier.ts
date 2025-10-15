@@ -13,11 +13,8 @@
 
     // Add CSS for visited links with specific class
     GM_addStyle(`
-        a.nekopost-chapter-link:visited {
-            color: #6b7280 !important;
-        }
         a.nekopost-chapter-link:visited > div:first-child {
-            color: #6b7280 !important;
+            color: #6b7280;
         }
     `);
 

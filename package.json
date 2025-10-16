@@ -5,7 +5,9 @@
     "main": ".eslintrc.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc && mv nekopost-href-modifier.js nekopost-href-modifier.user.js"
+        "build": "tsc && mv nekopost-href-modifier.js nekopost-href-modifier.user.js && mv nekopost-infinite-scroll.js nekopost-infinite-scroll.user.js",
+        "clean": "rm -f *.js *.js.map",
+        "build:watch": "tsc -w"
     },
     "repository": {
         "type": "git",
